@@ -26,7 +26,7 @@ fun SettingsScreen(onLogout: () -> Unit = {}) {
         modifier = Modifier
             .fillMaxSize()
             // Solo padding horizontal y superior, sin padding inferior
-            .padding(horizontal = 24.dp, vertical = 0.dp)
+            .padding(horizontal = 24.dp)
             .verticalScroll(scrollState)
     ) {
         Spacer(modifier = Modifier.height(24.dp))
@@ -61,37 +61,27 @@ fun SettingsScreen(onLogout: () -> Unit = {}) {
 
         Spacer(modifier = Modifier.height(32.dp))
 
-        Divider(modifier = Modifier.padding(vertical = 16.dp))
-
         Text("Preferencias de Ruta", style = MaterialTheme.typography.titleSmall)
         SettingSelector("Tipo de ciclismo", selected = "Montaña")
         SettingSelector("Nivel de dificultad", selected = "Moderado")
-
-        Divider(modifier = Modifier.padding(vertical = 16.dp))
 
         Text("Comunidad", style = MaterialTheme.typography.titleSmall)
         SettingToggle("Mostrar mi perfil en rutas públicas", checked = true)
         SettingToggle("Permitir que otros me sigan", checked = true)
 
-        Divider(modifier = Modifier.padding(vertical = 16.dp))
-
         Text("Alertas de Seguridad", style = MaterialTheme.typography.titleSmall)
-        SettingToggle("Alertas de clima extremo", checked = false)
+
         SettingToggle("Notificar sobre rutas peligrosas", checked = true)
 
-        Divider(modifier = Modifier.padding(vertical = 16.dp))
-
         Text("Mapa", style = MaterialTheme.typography.titleSmall)
-        SettingSelector("Estilo del mapa", selected = "Oscuro")
+
         SettingToggle("Mostrar talleres automáticamente", checked = true)
 
-        Divider(modifier = Modifier.padding(vertical = 16.dp))
-
         Text("Privacidad", style = MaterialTheme.typography.titleSmall)
-        SettingToggle("Compartir ubicación en tiempo real", checked = false)
+
         SettingToggle("Guardar historial de rutas", checked = true)
 
-        Spacer(modifier = Modifier.height(32.dp))
+        Spacer(modifier = Modifier.height(10.dp))
 
         // Botón de cerrar sesión
         Button(
@@ -103,7 +93,9 @@ fun SettingsScreen(onLogout: () -> Unit = {}) {
             modifier = Modifier.align(Alignment.CenterHorizontally)
         ) {
             Text("Cerrar sesión")
+
         }
+        Spacer(modifier = Modifier.height(10.dp))
     }
 }
 

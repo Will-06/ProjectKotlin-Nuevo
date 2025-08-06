@@ -35,7 +35,3 @@ fun HomeScreen() {
     }
 }
 
-@Composable
-private fun SimpleScreen(text: String) {
-    Text(text = text)
-}

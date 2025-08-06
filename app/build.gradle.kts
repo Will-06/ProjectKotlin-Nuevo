@@ -42,8 +42,6 @@ android {
 dependencies {
 
     implementation(libs.compose.foundation)
-    //implementation(libs.compose.foundation.pager)
-
     implementation(libs.navigationCompose)
     implementation(libs.material3)
     implementation(libs.material3WindowSizeClass)
