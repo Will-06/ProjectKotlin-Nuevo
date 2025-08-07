@@ -2,6 +2,7 @@ package com.orizzonter.app.features.home.components
 
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
@@ -15,6 +16,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import com.orizzonter.app.R
+import androidx.compose.foundation.layout.size
 
 sealed class BottomNavItem(
     val route: String,
@@ -43,7 +45,8 @@ fun BottomBar(navController: NavHostController) {
     Surface(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(start = 16.dp, end = 16.dp, top = 0.dp, bottom = 15.dp),
+            .navigationBarsPadding()
+            .padding(horizontal = 12.dp, vertical = 8.dp),
         tonalElevation = 8.dp,
         shape = RoundedCornerShape(24.dp),
         color = MaterialTheme.colorScheme.surface
@@ -56,11 +59,16 @@ fun BottomBar(navController: NavHostController) {
                 NavigationBarItem(
                     icon = {
                         item.icon?.let {
-                            Icon(imageVector = it, contentDescription = item.title)
+                            Icon(
+                                imageVector = it,
+                                contentDescription = item.title,
+                                modifier = Modifier.size(24.dp)
+                            )
                         } ?: item.drawableRes?.let {
                             Icon(
                                 painter = painterResource(id = it),
-                                contentDescription = item.title
+                                contentDescription = item.title,
+                                modifier = Modifier.size(24.dp)
                             )
                         }
                     },

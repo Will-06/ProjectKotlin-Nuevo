@@ -40,7 +40,7 @@ android {
 }
 
 dependencies {
-
+    implementation(libs.material)
     implementation(libs.compose.foundation)
     implementation(libs.navigationCompose)
     implementation(libs.material3)
