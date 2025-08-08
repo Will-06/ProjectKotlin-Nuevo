@@ -1,6 +1,7 @@
 package com.orizzonter.app.features.home.components
 
 import androidx.annotation.DrawableRes
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
@@ -17,6 +18,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import com.orizzonter.app.R
 import androidx.compose.foundation.layout.size
+import androidx.compose.ui.graphics.Color
 
 sealed class BottomNavItem(
     val route: String,
@@ -46,34 +48,47 @@ fun BottomBar(navController: NavHostController) {
         modifier = Modifier
             .fillMaxWidth()
             .navigationBarsPadding()
-            .padding(horizontal = 12.dp, vertical = 8.dp),
-        tonalElevation = 8.dp,
+            .padding(horizontal = 12.dp, vertical = 8.dp)
+            .border(
+                width = 1.dp,
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f),
+                shape = RoundedCornerShape(24.dp)
+            ),
+        color = MaterialTheme.colorScheme.surface.copy(alpha = 0.15f),
+        tonalElevation = 0.dp,
         shape = RoundedCornerShape(24.dp),
-        color = MaterialTheme.colorScheme.surface
     ) {
         NavigationBar(
-            containerColor = MaterialTheme.colorScheme.surface,
+            containerColor = Color.Transparent,
             tonalElevation = 0.dp
         ) {
             items.forEach { item ->
+                val selected = currentRoute == item.route
                 NavigationBarItem(
                     icon = {
                         item.icon?.let {
                             Icon(
                                 imageVector = it,
                                 contentDescription = item.title,
-                                modifier = Modifier.size(24.dp)
+                                modifier = Modifier.size(24.dp),
+                                tint = if (selected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
                             )
                         } ?: item.drawableRes?.let {
                             Icon(
                                 painter = painterResource(id = it),
                                 contentDescription = item.title,
-                                modifier = Modifier.size(24.dp)
+                                modifier = Modifier.size(24.dp),
+                                tint = if (selected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
                             )
                         }
                     },
-                    label = { Text(item.title) },
-                    selected = currentRoute == item.route,
+                    label = {
+                        Text(
+                            text = item.title,
+                            color = if (selected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
+                        )
+                    },
+                    selected = selected,
                     onClick = {
                         navController.navigate(item.route) {
                             popUpTo(navController.graph.findStartDestination().id) {
@@ -82,7 +97,14 @@ fun BottomBar(navController: NavHostController) {
                             launchSingleTop = true
                             restoreState = true
                         }
-                    }
+                    },
+                    colors = NavigationBarItemDefaults.colors(
+                        selectedIconColor = MaterialTheme.colorScheme.primary,
+                        unselectedIconColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
+                        selectedTextColor = MaterialTheme.colorScheme.primary,
+                        unselectedTextColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
+                        indicatorColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.15f)
+                    )
                 )
             }
         }

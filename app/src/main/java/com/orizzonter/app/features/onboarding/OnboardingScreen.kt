@@ -1,25 +1,31 @@
 package com.orizzonter.app.features.onboarding
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.orizzonter.app.R
-import androidx.compose.ui.text.font.FontFamily
+import kotlinx.coroutines.launch
 
 data class OnboardingPage(
     val title: String,
@@ -51,124 +57,166 @@ fun OnboardingScreen(navController: NavController) {
         )
     )
 
-
     val pagerState = rememberPagerState(initialPage = 0) { pages.size }
+    val coroutineScope = rememberCoroutineScope()
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background)
-    ) {
-        HorizontalPager(
-            state = pagerState,
+    Box(modifier = Modifier.fillMaxSize()) {
+        Column(
             modifier = Modifier
-                .weight(1f)
-                .fillMaxWidth()
-        ) { page ->
-            OnboardingPageContent(
-                page = pages[page],
-                isLastPage = page == pages.lastIndex,
-                onStartClick = { navController.navigate("login") }
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.background)
+        ) {
+            HorizontalPager(
+                state = pagerState,
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxWidth()
+            ) { page ->
+                OnboardingPageContent(page = pages[page])
+            }
+
+            PageIndicator()
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            NextButton(
+                isLastPage = pagerState.currentPage == pages.lastIndex,
+                onClick = {
+                    coroutineScope.launch {
+                        if (pagerState.currentPage < pages.lastIndex) {
+                            pagerState.animateScrollToPage(pagerState.currentPage + 1)
+                        } else {
+                            navController.navigate("login")
+                        }
+                    }
+                }
             )
+
+            Spacer(modifier = Modifier.height(32.dp))
         }
     }
 }
 
 @Composable
-fun OnboardingPageContent(
-    page: OnboardingPage,
-    isLastPage: Boolean,
-    onStartClick: () -> Unit
-) {
-    Box(
-        modifier = Modifier.fillMaxSize()
+fun OnboardingPageContent(page: OnboardingPage) {
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(1f)
+                .clip(RoundedCornerShape(bottomStart = 30.dp, bottomEnd = 100.dp))
+                .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.15f)) // color azul con transparencia
+               // .border(
+                   // width = 1.5.dp,
+                   // color = MaterialTheme.colorScheme.primary.copy(alpha = 0.4f),
+                   // shape = RoundedCornerShape(bottomStart = 55.dp, bottomEnd = 55.dp)
+                //)
+                    ,
+            contentAlignment = Alignment.Center
+        ) {
+            Image(
+                painter = painterResource(id = page.imageRes),
+                contentDescription = page.title,
+                modifier = Modifier.size(280.dp)
+            )
+        }
+
+
+        // resto igual...
         Column(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(1f)
+                .padding(horizontal = 32.dp, vertical = 24.dp)
+                .padding(top = 72.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Box(
+            Text(
+                text = page.title.uppercase(),  // Letras mayúsculas para autoridad y presencia
+                fontSize = 36.sp,
+                fontWeight = FontWeight.ExtraBold,
+                color = MaterialTheme.colorScheme.secondary,  // Un color contrastante pero armonioso
+                textAlign = TextAlign.Center,
+                fontFamily = FontFamily.SansSerif,  // Moderno y limpio
+                letterSpacing = 2.sp,  // Espaciado generoso para estilo y lectura
+                lineHeight = 42.sp,
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .weight(1f)
-                    .clip(RoundedCornerShape(bottomStart = 55.dp, bottomEnd = 55.dp))
-                    .background(page.topColor),
-                contentAlignment = Alignment.Center
-            ) {
-                Image(
-                    painter = painterResource(id = page.imageRes),
-                    contentDescription = page.title,
-                    modifier = Modifier.size(500.dp)
-                )
-            }
-
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .weight(1f)
-                    .padding(horizontal = 24.dp)
-                    .padding(top = 100.dp), // Puedes ajustar esto para moverlo más o menos
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Top
-            ) {
-
-                Text(
-                    text = page.title,
-                    fontSize = 34.sp, // ligeramente más pequeño que 36sp, más armonioso
-                    fontWeight = FontWeight.Bold, // ExtraBold puede parecer demasiado pesado
-                    letterSpacing = (-0.5).sp, // sutil compresión para elegancia
-                    color = MaterialTheme.colorScheme.onBackground,
-                    textAlign = TextAlign.Center,
-                    fontFamily = FontFamily.Serif, // Serif para un toque profesional y editorial
-                    lineHeight = 40.sp, // buena proporción para lectura y estética
-                    modifier = Modifier
-                        .padding(horizontal = 24.dp)
-                        .widthIn(max = 320.dp)
-                )
-
-
-                Spacer(modifier = Modifier.height(20.dp))
-
-                Text(
-                    text = page.description,
-                    fontSize = 16.sp, // un poco más chico para mejor jerarquía
-                    fontWeight = FontWeight.Normal,
-                    lineHeight = 24.sp,
-                    color = Color(0xFF6B6B6B),
-                    textAlign = TextAlign.Center,
-                    fontFamily = FontFamily.Serif,
-                    modifier = Modifier
-                        .padding(horizontal = 24.dp)
-                        .widthIn(max = 320.dp)
-                )
-            }
-        }
-
-        if (isLastPage) {
-            Box(
-                modifier = Modifier
-                    .align(Alignment.BottomEnd)
-                    .padding(end = 33.dp, bottom = 60.dp)
-                    .size(65.dp)
-                    .clip(RoundedCornerShape(20.dp))
-                    .background(page.topColor),
-                contentAlignment = Alignment.Center
-            ) {
-                Button(
-                    onClick = onStartClick,
-                    colors = ButtonDefaults.buttonColors(containerColor = page.topColor),
-                    shape = RoundedCornerShape(24.dp),
-                    contentPadding = PaddingValues(0.dp),
-                    modifier = Modifier.fillMaxSize()
-                ) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.img), // Reemplaza con tu ícono
-                        contentDescription = "Empezar",
-                        modifier = Modifier.size(32.dp) // Ajusta el tamaño según necesidad
+                    .widthIn(max = 320.dp)
+                    .shadow(
+                        elevation = 8.dp,
+                        shape = RoundedCornerShape(4.dp),
+                        ambientColor = MaterialTheme.colorScheme.secondary.copy(alpha = 0.3f),
+                        spotColor = MaterialTheme.colorScheme.secondary.copy(alpha = 0.3f)
                     )
-                }
+            )
 
-            }
+
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Text(
+                text = page.description,
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Normal,
+                color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f),
+                textAlign = TextAlign.Center,
+                fontFamily = FontFamily.SansSerif,
+                lineHeight = 28.sp,
+                letterSpacing = 0.25.sp,
+                modifier = Modifier.widthIn(max = 420.dp)
+            )
         }
+
+
+    }
+}
+
+@Composable
+fun PageIndicator() {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 8.dp),
+        horizontalArrangement = Arrangement.Center
+    ) {
+        Box(
+            modifier = Modifier
+                .width(25.dp)
+                .height(4.dp)
+                .clip(RoundedCornerShape(50))
+                .background(MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f))
+        )
+    }
+}
+
+@Composable
+fun NextButton(
+    isLastPage: Boolean,
+    onClick: () -> Unit
+) {
+    val backgroundGlassColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.25f)
+    val borderColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f)
+    val textColor = MaterialTheme.colorScheme.onSurface
+
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 90.dp)
+            .height(56.dp)
+            .clip(RoundedCornerShape(16.dp))
+            .background(backgroundGlassColor)
+            .border(1.dp, borderColor, RoundedCornerShape(16.dp))
+            .clickable(onClick = onClick),
+        contentAlignment = Alignment.Center
+    ) {
+        Text(
+            text = if (isLastPage) "¡Comencemos la aventura!" else "Siguiente",
+            color = textColor,
+            fontSize = 16.sp,
+            fontWeight = FontWeight.Bold
+        )
     }
 }

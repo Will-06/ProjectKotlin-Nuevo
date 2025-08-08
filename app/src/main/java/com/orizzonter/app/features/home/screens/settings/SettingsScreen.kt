@@ -1,9 +1,12 @@
 package com.orizzonter.app.features.home.screens.settings
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
@@ -12,6 +15,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.orizzonter.app.R
@@ -84,17 +88,27 @@ fun SettingsScreen(onLogout: () -> Unit = {}) {
         Spacer(modifier = Modifier.height(10.dp))
 
         // Botón de cerrar sesión
+
         Button(
             onClick = onLogout,
+            modifier = Modifier
+                .align(Alignment.CenterHorizontally)
+                .fillMaxWidth(0.6f)
+                .height(48.dp)
+                .border(
+                    width = 1.dp,
+                    brush = SolidColor(MaterialTheme.colorScheme.error.copy(alpha = 0.5f)),
+                    shape = RoundedCornerShape(24.dp)
+                ),
+            shape = RoundedCornerShape(24.dp),
             colors = ButtonDefaults.buttonColors(
-                containerColor = MaterialTheme.colorScheme.error,
-                contentColor = MaterialTheme.colorScheme.onError
-            ),
-            modifier = Modifier.align(Alignment.CenterHorizontally)
+                containerColor = MaterialTheme.colorScheme.error.copy(alpha = 0.15f),
+                contentColor = MaterialTheme.colorScheme.error
+            )
         ) {
-            Text("Cerrar sesión")
-
+            Text("Cerrar sesión", style = MaterialTheme.typography.bodyMedium)
         }
+
         Spacer(modifier = Modifier.height(10.dp))
     }
 }
@@ -108,14 +122,37 @@ fun SettingToggle(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 8.dp),
+            .padding(vertical = 8.dp)
+            .background(
+                color = MaterialTheme.colorScheme.surface.copy(alpha = 0.15f),
+                shape = RoundedCornerShape(16.dp)
+            )
+            .border(
+                width = 1.dp,
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f),
+                shape = RoundedCornerShape(16.dp)
+            )
+            .padding(horizontal = 16.dp, vertical = 12.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Text(title)
-        Switch(checked = checked, onCheckedChange = onCheckedChange)
+        Text(
+            text = title,
+            color = MaterialTheme.colorScheme.onBackground
+        )
+        Switch(
+            checked = checked,
+            onCheckedChange = onCheckedChange,
+            colors = SwitchDefaults.colors(
+                checkedThumbColor = MaterialTheme.colorScheme.primary,
+                uncheckedThumbColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f),
+                checkedTrackColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.3f),
+                uncheckedTrackColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f)
+            )
+        )
     }
 }
+
 
 @Composable
 fun SettingSelector(title: String, selected: String) {
