@@ -1,22 +1,26 @@
 package com.orizzonter.app.features.onboarding
 
-import androidx.compose.foundation.BorderStroke
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -40,19 +44,19 @@ fun OnboardingScreen(navController: NavController) {
         OnboardingPage(
             "Bienvenido",
             "Empieza tu aventura sobre dos ruedas con Orizzonter, la app pensada para los verdaderos amantes del ciclismo. Descubre rutas, conoce nuevos destinos y transforma cada pedaleo en una experiencia única.",
-            R.drawable.bicicle,
+            R.drawable.bienvenido2,
             Color(0xFF4DB6AC)
         ),
         OnboardingPage(
             "Rutas",
             "Pedalea por caminos increíbles que te esperan a la vuelta de cada curva. Con Orizzonter, tendrás acceso a una amplia variedad de rutas adaptadas a tu nivel, intereses y ganas de explorar.",
-            R.drawable.like,
+            R.drawable.rutas2,
             Color(0xFFFFC107)
         ),
         OnboardingPage(
             "Comunidad",
             "Súmate a una comunidad vibrante que comparte tu pasión por el ciclismo. Intercambia experiencias, únete a retos, encuentra compañeros de ruta y crece junto a otros ciclistas como tú.",
-            R.drawable.comunidad,
+            R.drawable.comunidad2,
             Color(0xFF9575CD)
         )
     )
@@ -75,7 +79,7 @@ fun OnboardingScreen(navController: NavController) {
                 OnboardingPageContent(page = pages[page])
             }
 
-            PageIndicator()
+            PageIndicator(pagerState = pagerState)
 
             Spacer(modifier = Modifier.height(24.dp))
 
@@ -108,24 +112,16 @@ fun OnboardingPageContent(page: OnboardingPage) {
                 .fillMaxWidth()
                 .weight(1f)
                 .clip(RoundedCornerShape(bottomStart = 30.dp, bottomEnd = 100.dp))
-                .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.15f)) // color azul con transparencia
-               // .border(
-                   // width = 1.5.dp,
-                   // color = MaterialTheme.colorScheme.primary.copy(alpha = 0.4f),
-                   // shape = RoundedCornerShape(bottomStart = 55.dp, bottomEnd = 55.dp)
-                //)
-                    ,
+                .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.15f)),
             contentAlignment = Alignment.Center
         ) {
             Image(
                 painter = painterResource(id = page.imageRes),
                 contentDescription = page.title,
-                modifier = Modifier.size(280.dp)
+                modifier = Modifier.size(480.dp)
             )
         }
 
-
-        // resto igual...
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -134,14 +130,14 @@ fun OnboardingPageContent(page: OnboardingPage) {
                 .padding(top = 72.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text(
-                text = page.title.uppercase(),  // Letras mayúsculas para autoridad y presencia
+           /* Text(
+                text = page.title.uppercase(),
                 fontSize = 36.sp,
                 fontWeight = FontWeight.ExtraBold,
-                color = MaterialTheme.colorScheme.secondary,  // Un color contrastante pero armonioso
+                color = MaterialTheme.colorScheme.secondary,
                 textAlign = TextAlign.Center,
-                fontFamily = FontFamily.SansSerif,  // Moderno y limpio
-                letterSpacing = 2.sp,  // Espaciado generoso para estilo y lectura
+                fontFamily = FontFamily.SansSerif,
+                letterSpacing = 2.sp,
                 lineHeight = 42.sp,
                 modifier = Modifier
                     .widthIn(max = 320.dp)
@@ -152,9 +148,7 @@ fun OnboardingPageContent(page: OnboardingPage) {
                         spotColor = MaterialTheme.colorScheme.secondary.copy(alpha = 0.3f)
                     )
             )
-
-
-
+*/
             Spacer(modifier = Modifier.height(16.dp))
 
             Text(
@@ -169,26 +163,35 @@ fun OnboardingPageContent(page: OnboardingPage) {
                 modifier = Modifier.widthIn(max = 420.dp)
             )
         }
-
-
     }
 }
 
 @Composable
-fun PageIndicator() {
+fun PageIndicator(pagerState: PagerState) {
     Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = 8.dp),
+        modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.Center
     ) {
-        Box(
-            modifier = Modifier
-                .width(25.dp)
-                .height(4.dp)
-                .clip(RoundedCornerShape(50))
-                .background(MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f))
-        )
+        repeat(pagerState.pageCount) { index ->
+            val isSelected = index == pagerState.currentPage
+
+            val size by animateDpAsState(targetValue = if (isSelected) 14.dp else 10.dp)
+            val color by animateColorAsState(
+                targetValue = if (isSelected) MaterialTheme.colorScheme.primary
+                else MaterialTheme.colorScheme.onBackground.copy(alpha = 0.3f)
+            )
+            val shadowElevation by animateDpAsState(targetValue = if (isSelected) 6.dp else 0.dp)
+
+            Spacer(modifier = Modifier.width(8.dp))
+
+            Box(
+                modifier = Modifier
+                    .size(size)
+                    .shadow(shadowElevation, CircleShape)
+                    .background(color, CircleShape)
+            )
+        }
+        Spacer(modifier = Modifier.width(8.dp))
     }
 }
 
@@ -197,26 +200,54 @@ fun NextButton(
     isLastPage: Boolean,
     onClick: () -> Unit
 ) {
-    val backgroundGlassColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.25f)
-    val borderColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f)
-    val textColor = MaterialTheme.colorScheme.onSurface
+    var isPressed by remember { mutableStateOf(false) }
+
+    val scale by animateDpAsState(
+        targetValue = if (isPressed) 52.dp else 56.dp,
+        label = "scale"
+    )
+
+    val animatedBackgroundColor by animateColorAsState(
+        targetValue = if (isPressed)
+            MaterialTheme.colorScheme.primary.copy(alpha = 0.15f)
+        else
+            MaterialTheme.colorScheme.surface.copy(alpha = 0.25f),
+        label = "backgroundColor"
+    )
+
+    val animatedBorderColor by animateColorAsState(
+        targetValue = if (isPressed)
+            MaterialTheme.colorScheme.primary.copy(alpha = 0.4f)
+        else
+            MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f),
+        label = "borderColor"
+    )
 
     Box(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 90.dp)
-            .height(56.dp)
+            .height(scale)
             .clip(RoundedCornerShape(16.dp))
-            .background(backgroundGlassColor)
-            .border(1.dp, borderColor, RoundedCornerShape(16.dp))
-            .clickable(onClick = onClick),
+            .background(animatedBackgroundColor)
+            .border(1.dp, animatedBorderColor, RoundedCornerShape(16.dp))
+            .pointerInput(Unit) {
+                detectTapGestures(
+                    onPress = {
+                        isPressed = true
+                        tryAwaitRelease()
+                        isPressed = false
+                        onClick()
+                    }
+                )
+            },
         contentAlignment = Alignment.Center
     ) {
         Text(
             text = if (isLastPage) "¡Comencemos la aventura!" else "Siguiente",
-            color = textColor,
+            color = MaterialTheme.colorScheme.onSurface,
             fontSize = 16.sp,
-            fontWeight = FontWeight.Bold
+            fontWeight = FontWeight.Medium
         )
     }
 }

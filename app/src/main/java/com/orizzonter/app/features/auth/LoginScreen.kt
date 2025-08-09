@@ -1,22 +1,29 @@
 package com.orizzonter.app.features.auth
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.orizzonter.app.R
 
 @Composable
 fun LoginScreen(navController: NavController) {
+
+    var email by remember { mutableStateOf("") }
+    var password by remember { mutableStateOf("") }
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -41,43 +48,31 @@ fun LoginScreen(navController: NavController) {
 
             Spacer(modifier = Modifier.height(32.dp))
 
-            // Input correo (simulado)
-            Box(
+            // Input correo
+            OutlinedTextField(
+                value = email,
+                onValueChange = { email = it },
+                placeholder = { Text("Correo electrónico") },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(56.dp)
-                    .clip(RoundedCornerShape(14.dp))
-                    .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.1f))
-                    .border(1.dp, MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f), RoundedCornerShape(14.dp))
-                    .padding(horizontal = 16.dp),
-                contentAlignment = Alignment.CenterStart
-            ) {
-                Text(
-                    text = "Correo electrónico",
-                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
-                    fontSize = 16.sp
-                )
-            }
+                    .height(56.dp),
+                shape = RoundedCornerShape(14.dp),
+                singleLine = true
+            )
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Input contraseña (simulado)
-            Box(
+            // Input contraseña
+            OutlinedTextField(
+                value = password,
+                onValueChange = { password = it },
+                placeholder = { Text("Contraseña") },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(56.dp)
-                    .clip(RoundedCornerShape(14.dp))
-                    .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.1f))
-                    .border(1.dp, MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f), RoundedCornerShape(14.dp))
-                    .padding(horizontal = 16.dp),
-                contentAlignment = Alignment.CenterStart
-            ) {
-                Text(
-                    text = "Contraseña",
-                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
-                    fontSize = 16.sp
-                )
-            }
+                    .height(56.dp),
+                shape = RoundedCornerShape(14.dp),
+                singleLine = true
+            )
 
             Spacer(modifier = Modifier.height(32.dp))
 
@@ -110,6 +105,36 @@ fun LoginScreen(navController: NavController) {
                 )
             }
 
+            // 👉 INICIO Sección de botones sociales
+            Spacer(modifier = Modifier.height(24.dp))
+
+            Text(
+                text = "O continúa con",
+                color = MaterialTheme.colorScheme.onBackground,
+                fontSize = 14.sp
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceEvenly,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                SocialLoginButton(iconResId = R.drawable.google) {
+                    // Acción de login con Google
+                }
+
+                SocialLoginButton(iconResId = R.drawable.facebook) {
+                    // Acción de login con Facebook
+                }
+
+                SocialLoginButton(iconResId = R.drawable.images) {
+                    // Acción de login con WhatsApp
+                }
+            }
+            // 👈 FIN Sección de botones sociales
+
             Spacer(modifier = Modifier.height(32.dp))
 
             Text(
@@ -126,5 +151,32 @@ fun LoginScreen(navController: NavController) {
                 )
             }
         }
+    }
+}
+
+@Composable
+fun SocialLoginButton(
+    iconResId: Int,
+    onClick: () -> Unit
+) {
+    Box(
+        modifier = Modifier
+            .size(56.dp)
+            .clip(RoundedCornerShape(12.dp))
+            .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.05f))
+            .border(
+                1.dp,
+                MaterialTheme.colorScheme.onSurface.copy(alpha = 0.15f),
+                RoundedCornerShape(12.dp)
+            )
+            .clickable { onClick() },
+        contentAlignment = Alignment.Center
+    ) {
+        Image(
+            painter = painterResource(id = iconResId),
+            contentDescription = null,
+            modifier = Modifier.size(28.dp)
+        )
+
     }
 }
