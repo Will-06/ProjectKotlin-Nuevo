@@ -24,12 +24,12 @@ import com.orizzonter.app.core.designsystem.LocalAppTheme
 @Composable
 fun SettingsScreen(onLogout: () -> Unit = {}) {
     val theme = LocalAppTheme.current
-    val scrollState = rememberScrollState()  // ScrollState para scroll vertical
+    val scrollState = rememberScrollState()
 
     Column(
         modifier = Modifier
             .fillMaxSize()
-            // Solo padding horizontal y superior, sin padding inferior
+
             .padding(horizontal = 24.dp)
             .verticalScroll(scrollState)
     ) {

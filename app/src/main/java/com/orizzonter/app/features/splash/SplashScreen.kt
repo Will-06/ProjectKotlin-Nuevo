@@ -11,6 +11,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.IntOffset
@@ -52,7 +53,7 @@ fun SplashScreen(navController: NavController) {
             verticalArrangement = Arrangement.Center
         ) {
             Image(
-                painter = painterResource(id = R.drawable.logo2),
+                painter = painterResource(id = R.drawable.logo_orizzonter),
                 contentDescription = "Logo principal",
                 modifier = Modifier
                     .size(150.dp)
@@ -67,15 +68,19 @@ fun SplashScreen(navController: NavController) {
             ) {
                 Text(
                     text = "Orizzonter",
-                    style = MaterialTheme.typography.displayLarge,
                     color = MaterialTheme.colorScheme.onBackground,
-                    fontSize =  75.sp,
+                    fontSize = 64.sp,
+                    fontWeight = FontWeight.Bold,
+                    letterSpacing = 1.sp,
+                    style = MaterialTheme.typography.displayLarge
                 )
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(16.dp))
                 Text(
-                    text = "Explora sin límites",
-                    fontSize = 23.sp,
-                    color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f)
+                    text = "Explora nuevos horizontes",
+                    color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f),
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Normal,
+                    letterSpacing = 0.5.sp
                 )
             }
         }

@@ -1,23 +1,28 @@
 package com.orizzonter.app.features.home.screens.services
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Build
+import androidx.compose.material.icons.filled.DirectionsBike
+import androidx.compose.material.icons.filled.Map
+import androidx.compose.material.icons.filled.LocalCafe
+import androidx.compose.material.icons.filled.Storefront
+import androidx.compose.material.icons.filled.HealthAndSafety
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.orizzonter.app.R
 
 @Composable
 fun ServicesScreen() {
@@ -32,8 +37,9 @@ fun ServicesScreen() {
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Top
             ) {
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(24.dp))
 
+                // Header
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -41,9 +47,9 @@ fun ServicesScreen() {
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
 
+
                     Spacer(modifier = Modifier.height(8.dp))
 
-                    // Subtítulo con maxWidth y centrado
                     Text(
                         text = "Consulta los servicios disponibles para que tu experiencia sea única.",
                         style = MaterialTheme.typography.bodyLarge.copy(
@@ -52,68 +58,88 @@ fun ServicesScreen() {
                         ),
                         color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f),
                         modifier = Modifier.fillMaxWidth(0.85f),
-                        textAlign = TextAlign.Center
+                        textAlign = androidx.compose.ui.text.style.TextAlign.Center
                     )
-
-                    Spacer(modifier = Modifier.height(32.dp))
-
-                    // Cards de servicios
-                    Column(
-                        modifier = Modifier.fillMaxWidth(),
-                        verticalArrangement = Arrangement.spacedBy(20.dp)
-                    ) {
-                        ServiceMiniCard(
-                            title = "Taller de Bicis",
-                            description = "Repara y mantén tu bicicleta con los mejores expertos.",
-                            imageRes = R.drawable.servicios2
-                        )
-                        ServiceMiniCard(
-                            title = "Rutas Guiadas",
-                            description = "Explora rutas seguras y emocionantes acompañados por guías.",
-                            imageRes = R.drawable.servicios2
-                        )
-
-                            ServiceMiniCard(
-                                title = "Alquiler de Bicicletas",
-                                description = "Alquila bicicletas para cualquier aventura y disfrútalas al máximo.",
-                                imageRes = R.drawable.servicios2
-                            )
-
-                    }
-
-
                 }
 
-                Spacer(modifier = Modifier.height(paddingValues.calculateBottomPadding()))
+                Spacer(modifier = Modifier.height(32.dp))
+
+                // Cards de servicios
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 24.dp),
+                    verticalArrangement = Arrangement.spacedBy(20.dp)
+                ) {
+                    ServiceMiniCard(
+                        title = "Taller de Bicis",
+                        description = "Repara y mantén tu bicicleta con los mejores expertos.",
+                        icon = Icons.Default.Build
+                    )
+                    ServiceMiniCard(
+                        title = "Rutas Guiadas",
+                        description = "Explora rutas seguras y emocionantes con acompañamiento profesional.",
+                        icon = Icons.Default.Map
+                    )
+                    ServiceMiniCard(
+                        title = "Alquiler de Bicicletas",
+                        description = "Encuentra bicicletas disponibles para cualquier tipo de aventura.",
+                        icon = Icons.Default.DirectionsBike
+                    )
+                    ServiceMiniCard(
+                        title = "Tiendas Especializadas",
+                        description = "Compra accesorios y equipo de calidad para tu ciclismo.",
+                        icon = Icons.Default.Storefront
+                    )
+                    ServiceMiniCard(
+                        title = "Consejos de Salud",
+                        description = "Información sobre nutrición, cuidado y bienestar para ciclistas.",
+                        icon = Icons.Default.HealthAndSafety
+                    )
+                    ServiceMiniCard(
+                        title = "Puntos de Hidratación",
+                        description = "Localiza estaciones para hidratarte durante tus rutas.",
+                        icon = Icons.Default.LocalCafe
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(48.dp))
             }
         }
     )
 }
 
 @Composable
-fun ServiceMiniCard(title: String, description: String, imageRes: Int) {
+fun ServiceMiniCard(title: String, description: String, icon: ImageVector) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(18.dp))
-            .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.1f))
+            .clip(RoundedCornerShape(20.dp))
+            .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.2f))
             .border(
-                1.dp,
-                MaterialTheme.colorScheme.onSurface.copy(alpha = 0.15f),
-                RoundedCornerShape(18.dp)
+                width = 1.dp,
+                color = MaterialTheme.colorScheme.outline.copy(alpha = 0.3f),
+                shape = RoundedCornerShape(20.dp)
             )
             .padding(16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Image(
-            painter = painterResource(id = imageRes),
-            contentDescription = title,
+        Box(
             modifier = Modifier
-                .size(64.dp)
-                .clip(RoundedCornerShape(12.dp))
-        )
+                .size(56.dp)
+                .clip(CircleShape)
+                .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.1f)),
+            contentAlignment = Alignment.Center
+        ) {
+            Icon(
+                imageVector = icon,
+                contentDescription = title,
+                tint = MaterialTheme.colorScheme.primary,
+                modifier = Modifier.size(28.dp)
+            )
+        }
 
-        Spacer(modifier = Modifier.width(20.dp))
+        Spacer(modifier = Modifier.width(16.dp))
 
         Column(modifier = Modifier.weight(1f)) {
             Text(
@@ -131,7 +157,7 @@ fun ServiceMiniCard(title: String, description: String, imageRes: Int) {
                     color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f),
                     lineHeight = 18.sp
                 ),
-                maxLines = 2
+                maxLines = 3
             )
         }
     }

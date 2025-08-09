@@ -27,22 +27,59 @@ import com.orizzonter.app.R
 fun CommunityScreen() {
     val communityPosts = listOf(
         CommunityPost(
-            user = "Lucía Martínez",
+            user = "Andrés Velasco",
+            avatarResId = R.drawable.avatar,
+            text = "¿Alguien ha probado una de las nuevas rutas rurales que suben por Santa Rosa o Las Guacas? Vi que están marcadas como dificultad media 🔥",
+            likes = 14,
+            comments = 5,
+            imageResId = R.drawable.popayan
+        ),
+
+        CommunityPost(
+            user = "Laura Fernández",
             avatarResId = R.drawable.avatarmujer,
-            text = "¿Alguien va al recorrido del domingo por la ciclovía?",
-            likes = 8,
+            text = "Sí, fui el domingo por el sector de Las Guacas. Tiene una subida fuerte al inicio, pero la vista de Popayán desde arriba vale totalmente la pena . Lleven agua 💧",
+            likes = 11,
             comments = 2,
             imageResId = null
         ),
 
         CommunityPost(
-            user = "Camilo Rojas",
+            user = "Carlos Méndez",
             avatarResId = R.drawable.avatar,
-            text = "Hoy!",
-            likes = 12,
-            comments = 3,
-            imageResId = R.drawable.popayan
+            text = "Recomiendo revisar la presión de las llantas antes. Cerca al parque de La Paz hay una tienda que ajusta gratis. La encontré por Oizzonter 🚲🔧",
+            likes = 9,
+            comments = 1,
+            imageResId = R.drawable.monserrate
         ),
+
+        CommunityPost(
+            user = "Andrés Velasco",
+            avatarResId = R.drawable.avatar,
+            text = "Gracias por los datos! ¿Qué tal si armamos un recorrido grupal para este sábado y probamos juntos esa ruta? 🚴‍♀️🌿",
+            likes = 17,
+            comments = 6,
+            imageResId = null
+        ),
+
+        CommunityPost(
+            user = "Laura Fernández",
+            avatarResId = R.drawable.avatarmujer,
+            text = "¡Me apunto! Puedo marcar la ruta en la app y compartir el punto de encuentro. ¿8:30am en la glorieta norte les sirve?",
+            likes = 15,
+            comments = 4,
+            imageResId = null
+        ),
+
+        CommunityPost(
+            user = "Orizzonter Team",
+            avatarResId = R.drawable.logo_orizzonter,
+            text = "¡Nos encanta ver cómo se conectan! Recuerden que pueden registrar su ruta, compartirla con otros y calificarla. ¡Exploren nuevos Horizontes! 💚",
+            likes = 25,
+            comments = 10,
+            imageResId = R.drawable.logo_orizzonter
+        )
+
     )
 
     Scaffold(

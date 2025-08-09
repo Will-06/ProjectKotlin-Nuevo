@@ -22,6 +22,7 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -50,7 +51,7 @@ fun OnboardingScreen(navController: NavController) {
         OnboardingPage(
             "Rutas",
             "Pedalea por caminos increíbles que te esperan a la vuelta de cada curva. Con Orizzonter, tendrás acceso a una amplia variedad de rutas adaptadas a tu nivel, intereses y ganas de explorar.",
-            R.drawable.rutas2,
+            R.drawable.rutas3,
             Color(0xFFFFC107)
         ),
         OnboardingPage(
@@ -247,7 +248,11 @@ fun NextButton(
             text = if (isLastPage) "¡Comencemos la aventura!" else "Siguiente",
             color = MaterialTheme.colorScheme.onSurface,
             fontSize = 16.sp,
-            fontWeight = FontWeight.Medium
+            fontWeight = FontWeight.SemiBold,
+            letterSpacing = 0.5.sp,             // un poquito de espacio entre letras
+            fontFamily = FontFamily.Default
         )
+
+
     }
 }
