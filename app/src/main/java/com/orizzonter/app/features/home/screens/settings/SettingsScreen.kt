@@ -26,16 +26,16 @@ fun SettingsScreen(onLogout: () -> Unit = {}) {
     val theme = LocalAppTheme.current
     val scrollState = rememberScrollState()
 
+    // Contenedor principal con scroll vertical
     Column(
         modifier = Modifier
             .fillMaxSize()
-
             .padding(horizontal = 24.dp)
             .verticalScroll(scrollState)
     ) {
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(Modifier.height(24.dp))
 
-        // Perfil centrado
+        // Sección de perfil centrado
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -43,13 +43,13 @@ fun SettingsScreen(onLogout: () -> Unit = {}) {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Image(
-                painter = painterResource(id = R.drawable.fotoperfil),
+                painter = painterResource(R.drawable.fotoperfil),
                 contentDescription = "Foto de perfil",
                 modifier = Modifier
                     .size(96.dp)
-                    .clip(CircleShape)
+                    .clip(CircleShape) // Imagen circular
             )
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(Modifier.height(8.dp))
             Text("Orizzonter", style = MaterialTheme.typography.bodyLarge)
             Text(
                 "orizzonter@gmail.com",
@@ -58,37 +58,38 @@ fun SettingsScreen(onLogout: () -> Unit = {}) {
             )
         }
 
-        // Opciones base
-        SettingToggle("Modo oscuro", checked = theme.isDark) { theme.toggleTheme() }
+        // Opciones principales de configuración con toggles y selectores
+        SettingToggle("Modo oscuro", theme.isDark) { theme.toggleTheme() }
         SettingToggle("Notificaciones", checked = true)
         SettingSelector("Idioma", selected = "Español")
 
-        Spacer(modifier = Modifier.height(32.dp))
+        Spacer(Modifier.height(32.dp))
 
+        // Preferencias específicas de ruta
         Text("Preferencias de Ruta", style = MaterialTheme.typography.titleSmall)
         SettingSelector("Tipo de ciclismo", selected = "Montaña")
         SettingSelector("Nivel de dificultad", selected = "Moderado")
 
+        // Opciones de comunidad
         Text("Comunidad", style = MaterialTheme.typography.titleSmall)
         SettingToggle("Mostrar mi perfil en rutas públicas", checked = true)
         SettingToggle("Permitir que otros me sigan", checked = true)
 
+        // Alertas de seguridad
         Text("Alertas de Seguridad", style = MaterialTheme.typography.titleSmall)
-
         SettingToggle("Notificar sobre rutas peligrosas", checked = true)
 
+        // Opciones de mapa
         Text("Mapa", style = MaterialTheme.typography.titleSmall)
-
         SettingToggle("Mostrar talleres automáticamente", checked = true)
 
+        // Privacidad
         Text("Privacidad", style = MaterialTheme.typography.titleSmall)
-
         SettingToggle("Guardar historial de rutas", checked = true)
 
-        Spacer(modifier = Modifier.height(10.dp))
+        Spacer(Modifier.height(10.dp))
 
-        // Botón de cerrar sesión
-
+        // Botón para cerrar sesión
         Button(
             onClick = onLogout,
             modifier = Modifier
@@ -96,9 +97,9 @@ fun SettingsScreen(onLogout: () -> Unit = {}) {
                 .fillMaxWidth(0.6f)
                 .height(48.dp)
                 .border(
-                    width = 1.dp,
-                    brush = SolidColor(MaterialTheme.colorScheme.error.copy(alpha = 0.5f)),
-                    shape = RoundedCornerShape(24.dp)
+                    1.dp,
+                    SolidColor(MaterialTheme.colorScheme.error.copy(alpha = 0.5f)),
+                    RoundedCornerShape(24.dp)
                 ),
             shape = RoundedCornerShape(24.dp),
             colors = ButtonDefaults.buttonColors(
@@ -109,7 +110,7 @@ fun SettingsScreen(onLogout: () -> Unit = {}) {
             Text("Cerrar sesión", style = MaterialTheme.typography.bodyMedium)
         }
 
-        Spacer(modifier = Modifier.height(10.dp))
+        Spacer(Modifier.height(10.dp))
     }
 }
 
@@ -119,27 +120,25 @@ fun SettingToggle(
     checked: Boolean,
     onCheckedChange: (Boolean) -> Unit = {}
 ) {
+    // Fila con título y switch para activar/desactivar opción
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 8.dp)
             .background(
-                color = MaterialTheme.colorScheme.surface.copy(alpha = 0.15f),
-                shape = RoundedCornerShape(16.dp)
+                MaterialTheme.colorScheme.surface.copy(alpha = 0.15f),
+                RoundedCornerShape(16.dp)
             )
             .border(
-                width = 1.dp,
-                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f),
-                shape = RoundedCornerShape(16.dp)
+                1.dp,
+                MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f),
+                RoundedCornerShape(16.dp)
             )
             .padding(horizontal = 16.dp, vertical = 12.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Text(
-            text = title,
-            color = MaterialTheme.colorScheme.onBackground
-        )
+        Text(title, color = MaterialTheme.colorScheme.onBackground)
         Switch(
             checked = checked,
             onCheckedChange = onCheckedChange,
@@ -153,9 +152,9 @@ fun SettingToggle(
     }
 }
 
-
 @Composable
 fun SettingSelector(title: String, selected: String) {
+    // Fila con título y opción seleccionada con ícono desplegable
     Row(
         modifier = Modifier
             .fillMaxWidth()

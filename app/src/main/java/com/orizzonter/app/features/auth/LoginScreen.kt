@@ -1,6 +1,5 @@
 package com.orizzonter.app.features.auth
 
-import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -12,43 +11,31 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.Fill
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.zIndex
 import androidx.navigation.NavController
+import androidx.compose.foundation.Canvas
 import com.orizzonter.app.R
-import androidx.compose.animation.core.*
 
+// Pantalla de inicio de sesión
 @Composable
 fun LoginScreen(navController: NavController) {
-
+    // Estado para email y contraseña
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
 
-
-    val infiniteTransition = rememberInfiniteTransition()
-    val offsetY by infiniteTransition.animateFloat(
-        initialValue = 0f,
-        targetValue = 6f,
-        animationSpec = infiniteRepeatable(
-            animation = tween(durationMillis = 1500, easing = LinearEasing),
-            repeatMode = RepeatMode.Reverse
-        )
-    )
-
+    // Contenedor principal con fondo
     Box(
         modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
     ) {
-        //  Ola superior
+        // Onda decorativa en la parte superior
         WaveShape(
             modifier = Modifier
                 .fillMaxWidth()
@@ -58,7 +45,7 @@ fun LoginScreen(navController: NavController) {
             isTop = true
         )
 
-        //  Ola inferior
+        // Onda decorativa en la parte inferior
         WaveShape(
             modifier = Modifier
                 .fillMaxWidth()
@@ -68,32 +55,14 @@ fun LoginScreen(navController: NavController) {
             isTop = false
         )
 
-        // Contenido central
+        // Caja central para los campos y botones
         Box(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(24.dp),
             contentAlignment = Alignment.Center
         ) {
-            // Ícono flotante con animación vertical
-            Box(
-                modifier = Modifier
-                    .size(96.dp)
-                    .align(Alignment.TopCenter)
-                    .offset(y = 90.dp + offsetY.dp)
-                    .clip(RoundedCornerShape(20.dp))
-                    .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.15f))
-                    .zIndex(1f),
-                contentAlignment = Alignment.Center
-            ) {
-                Image(
-                    painter = painterResource(id = R.drawable.logo_orizzonter),
-                    contentDescription = "App Icon",
-                    modifier = Modifier.size(90.dp),
-                    contentScale = ContentScale.Fit
-                )
-            }
-
+            // Columna con estilo de fondo, bordes y padding
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -104,43 +73,43 @@ fun LoginScreen(navController: NavController) {
                         MaterialTheme.colorScheme.onSurface.copy(alpha = 0.15f),
                         RoundedCornerShape(24.dp)
                     )
-                    .padding(top = 48.dp, bottom = 32.dp, start = 32.dp, end = 32.dp),
+                    .padding(vertical = 32.dp, horizontal = 32.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
+                // Título de la pantalla
                 Text(
                     text = "Iniciar sesión",
                     style = MaterialTheme.typography.headlineMedium.copy(fontWeight = FontWeight.Bold),
                     color = MaterialTheme.colorScheme.onBackground
                 )
 
-                Spacer(modifier = Modifier.height(32.dp))
+                Spacer(Modifier.height(32.dp))
 
+                // Campo para email
                 OutlinedTextField(
                     value = email,
                     onValueChange = { email = it },
                     placeholder = { Text("Correo electrónico") },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(56.dp),
+                    modifier = Modifier.fillMaxWidth().height(56.dp),
                     shape = RoundedCornerShape(14.dp),
                     singleLine = true
                 )
 
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(Modifier.height(16.dp))
 
+                // Campo para contraseña
                 OutlinedTextField(
                     value = password,
                     onValueChange = { password = it },
                     placeholder = { Text("Contraseña") },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(56.dp),
+                    modifier = Modifier.fillMaxWidth().height(56.dp),
                     shape = RoundedCornerShape(14.dp),
                     singleLine = true
                 )
 
-                Spacer(modifier = Modifier.height(32.dp))
+                Spacer(Modifier.height(32.dp))
 
+                // Botón para iniciar sesión
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -152,7 +121,7 @@ fun LoginScreen(navController: NavController) {
                             MaterialTheme.colorScheme.primary.copy(alpha = 0.4f),
                             RoundedCornerShape(16.dp)
                         )
-                        .clickable { navController.navigate("home") },
+                        .clickable { navController.navigate("home") }, // Navega a home al hacer click
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
@@ -163,8 +132,9 @@ fun LoginScreen(navController: NavController) {
                     )
                 }
 
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(Modifier.height(16.dp))
 
+                // Texto botón para recuperar contraseña
                 TextButton(onClick = { navController.navigate("forgot_password") }) {
                     Text(
                         "¿Olvidaste tu contraseña?",
@@ -173,42 +143,38 @@ fun LoginScreen(navController: NavController) {
                     )
                 }
 
-                Spacer(modifier = Modifier.height(24.dp))
+                Spacer(Modifier.height(24.dp))
 
+                // Texto separador para métodos alternativos
                 Text(
                     text = "O continúa con",
                     color = MaterialTheme.colorScheme.onBackground,
                     fontSize = 14.sp
                 )
 
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(Modifier.height(16.dp))
 
+                // Botones para login social (Google, Facebook, Twitter)
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceEvenly,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    SocialLoginButton(iconResId = R.drawable.google) {
-                        // Acción login Google
-                    }
-
-                    SocialLoginButton(iconResId = R.drawable.facebook) {
-                        // Acción login Facebook
-                    }
-
-                    SocialLoginButton(iconResId = R.drawable.twitter) {
-                        // Acción login WhatsApp
-                    }
+                    SocialLoginButton(R.drawable.google) { /* Acción login Google */ }
+                    SocialLoginButton(R.drawable.facebook) { /* Acción login Facebook */ }
+                    SocialLoginButton(R.drawable.twitter) { /* Acción login WhatsApp */ }
                 }
 
-                Spacer(modifier = Modifier.height(32.dp))
+                Spacer(Modifier.height(32.dp))
 
+                // Texto para invitar a registrarse
                 Text(
                     text = "¿No tienes cuenta?",
                     color = MaterialTheme.colorScheme.onBackground,
                     fontWeight = FontWeight.Medium
                 )
 
+                // Botón para ir a crear cuenta
                 TextButton(onClick = { navController.navigate("create_account") }) {
                     Text(
                         "Regístrate aquí",
@@ -221,11 +187,9 @@ fun LoginScreen(navController: NavController) {
     }
 }
 
+// Botón para login con redes sociales con icono y clickeable
 @Composable
-fun SocialLoginButton(
-    iconResId: Int,
-    onClick: () -> Unit
-) {
+fun SocialLoginButton(iconResId: Int, onClick: () -> Unit) {
     Box(
         modifier = Modifier
             .size(56.dp)
@@ -236,17 +200,18 @@ fun SocialLoginButton(
                 MaterialTheme.colorScheme.onSurface.copy(alpha = 0.15f),
                 RoundedCornerShape(12.dp)
             )
-            .clickable { onClick() },
+            .clickable(onClick = onClick),
         contentAlignment = Alignment.Center
     ) {
         Image(
-            painter = painterResource(id = iconResId),
+            painter = painterResource(iconResId),
             contentDescription = null,
             modifier = Modifier.size(28.dp)
         )
     }
 }
 
+// Composable que dibuja una forma de onda en la parte superior o inferior
 @Composable
 fun WaveShape(
     modifier: Modifier = Modifier,
@@ -256,11 +221,11 @@ fun WaveShape(
     Canvas(modifier = modifier) {
         val width = size.width
         val height = size.height
-
         val waveHeight = height * 0.6f
 
         val path = Path().apply {
             if (isTop) {
+                // Onda en la parte superior
                 moveTo(0f, height)
                 cubicTo(
                     width * 0.25f, height - waveHeight,
@@ -269,8 +234,8 @@ fun WaveShape(
                 )
                 lineTo(width, 0f)
                 lineTo(0f, 0f)
-                close()
             } else {
+                // Onda en la parte inferior
                 moveTo(0f, 0f)
                 cubicTo(
                     width * 0.25f, waveHeight,
@@ -279,14 +244,11 @@ fun WaveShape(
                 )
                 lineTo(width, height)
                 lineTo(0f, height)
-                close()
             }
+            close()
         }
 
-        drawPath(
-            path = path,
-            color = color,
-            style = Fill
-        )
+        // Dibuja la forma con el color dado
+        drawPath(path, color, style = Fill)
     }
 }

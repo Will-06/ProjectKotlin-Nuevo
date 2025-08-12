@@ -19,14 +19,16 @@ import androidx.navigation.NavController
 
 @Composable
 fun ForgotPasswordScreen(navController: NavController) {
+    // Estado para almacenar el email ingresado
     var email by remember { mutableStateOf("") }
 
+    // Contenedor principal con fondo
     Box(
         modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
     ) {
-        //  Ola superior
+        // Onda decorativa en la parte superior
         WaveShape(
             modifier = Modifier
                 .fillMaxWidth()
@@ -36,7 +38,7 @@ fun ForgotPasswordScreen(navController: NavController) {
             isTop = true
         )
 
-        // Ola inferior
+        // Onda decorativa en la parte inferior
         WaveShape(
             modifier = Modifier
                 .fillMaxWidth()
@@ -46,61 +48,79 @@ fun ForgotPasswordScreen(navController: NavController) {
             isTop = false
         )
 
-        // Contenido central
+        // Caja central para contenido
         Box(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(24.dp),
             contentAlignment = Alignment.Center
         ) {
+            // Columna con fondo, bordes y padding
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
                     .clip(RoundedCornerShape(24.dp))
                     .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.1f))
-                    .border(1.dp, MaterialTheme.colorScheme.onSurface.copy(alpha = 0.15f), RoundedCornerShape(24.dp))
+                    .border(
+                        1.dp,
+                        MaterialTheme.colorScheme.onSurface.copy(alpha = 0.15f),
+                        RoundedCornerShape(24.dp)
+                    )
                     .padding(32.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
+                // Título de la pantalla
                 Text(
                     text = "Recuperar contraseña",
                     style = MaterialTheme.typography.headlineMedium.copy(fontWeight = FontWeight.Bold),
                     color = MaterialTheme.colorScheme.onBackground
                 )
 
-                Spacer(modifier = Modifier.height(32.dp))
+                Spacer(Modifier.height(32.dp))
 
-                // Input email simulado (estilo glass)
+                // Caja para mostrar el email (simulando un input)
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(56.dp)
                         .clip(RoundedCornerShape(14.dp))
                         .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.1f))
-                        .border(1.dp, MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f), RoundedCornerShape(14.dp))
+                        .border(
+                            1.dp,
+                            MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f),
+                            RoundedCornerShape(14.dp)
+                        )
                         .padding(horizontal = 16.dp),
                     contentAlignment = Alignment.CenterStart
                 ) {
+                    // Texto que muestra placeholder o email ingresado
                     Text(
                         text = if (email.isEmpty()) "Correo electrónico" else email,
-                        color = if (email.isEmpty()) MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f) else MaterialTheme.colorScheme.onBackground,
+                        color = if (email.isEmpty())
+                            MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
+                        else
+                            MaterialTheme.colorScheme.onBackground,
                         fontSize = 16.sp
                     )
                 }
 
-                Spacer(modifier = Modifier.height(32.dp))
+                Spacer(Modifier.height(32.dp))
 
-                // Botón enviar instrucciones
+                // Botón para enviar instrucciones de recuperación
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(56.dp)
                         .clip(RoundedCornerShape(16.dp))
                         .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.15f))
-                        .border(1.5.dp, MaterialTheme.colorScheme.primary.copy(alpha = 0.4f), RoundedCornerShape(16.dp))
+                        .border(
+                            1.5.dp,
+                            MaterialTheme.colorScheme.primary.copy(alpha = 0.4f),
+                            RoundedCornerShape(16.dp)
+                        )
                         .clickable {
-                            // ógica para enviar el email
-                            navController.popBackStack()
+                            // Aquí se debería implementar la lógica para enviar email
+                            navController.popBackStack() // Regresa a la pantalla anterior
                         },
                     contentAlignment = Alignment.Center
                 ) {
@@ -112,8 +132,9 @@ fun ForgotPasswordScreen(navController: NavController) {
                     )
                 }
 
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(Modifier.height(16.dp))
 
+                // Botón para volver a la pantalla anterior
                 TextButton(onClick = { navController.popBackStack() }) {
                     Text(
                         "Volver",

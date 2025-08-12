@@ -1,5 +1,6 @@
 package com.orizzonter.app.features.home.screens.routes
 
+// Importación de elementos de UI y diseño
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -23,12 +24,19 @@ import com.orizzonter.app.R
 
 @Composable
 fun RoutesScreen() {
+    // Definición de bordes y colores
+    val cornerRadius = 24.dp
+    val shape = RoundedCornerShape(cornerRadius)
+    val onSurfaceAlpha = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f)
+    val onBackgroundColor = MaterialTheme.colorScheme.onBackground
+
+    // Contenedor principal
     Box(
         modifier = Modifier
             .fillMaxSize()
             .padding(3.dp)
     ) {
-        // Imagen de fondo con bordes redondeados
+        // Imagen de fondo (mapa)
         Image(
             painter = painterResource(id = R.drawable.glasssmap2),
             contentDescription = "Mapa de fondo",
@@ -38,7 +46,7 @@ fun RoutesScreen() {
             contentScale = ContentScale.Crop
         )
 
-        // Buscador en la parte superior
+        // Campo de búsqueda en la parte superior
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -47,6 +55,7 @@ fun RoutesScreen() {
         ) {
             var searchQuery by remember { mutableStateOf("") }
 
+            // TextField para buscar rutas
             TextField(
                 value = searchQuery,
                 onValueChange = { searchQuery = it },
@@ -56,13 +65,9 @@ fun RoutesScreen() {
                 },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .clip(RoundedCornerShape(24.dp))
+                    .clip(shape)
                     .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.7f))
-                    .border(
-                        width = 1.dp,
-                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f),
-                        shape = RoundedCornerShape(24.dp)
-                    )
+                    .border(1.dp, onSurfaceAlpha, shape)
                     .padding(horizontal = 4.dp),
                 colors = TextFieldDefaults.colors(
                     focusedContainerColor = Color.Transparent,
@@ -70,17 +75,17 @@ fun RoutesScreen() {
                     cursorColor = MaterialTheme.colorScheme.primary,
                     focusedIndicatorColor = Color.Transparent,
                     unfocusedIndicatorColor = Color.Transparent,
-                    focusedPlaceholderColor = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.5f),
-                    unfocusedPlaceholderColor = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.5f),
-                    focusedTextColor = MaterialTheme.colorScheme.onBackground,
-                    unfocusedTextColor = MaterialTheme.colorScheme.onBackground
+                    focusedPlaceholderColor = onBackgroundColor.copy(alpha = 0.5f),
+                    unfocusedPlaceholderColor = onBackgroundColor.copy(alpha = 0.5f),
+                    focusedTextColor = onBackgroundColor,
+                    unfocusedTextColor = onBackgroundColor
                 ),
-                shape = RoundedCornerShape(24.dp),
+                shape = shape,
                 singleLine = true
             )
         }
 
-        // Card centrada sobre la imagen
+        // Mensaje central informando funcionalidad futura
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -90,38 +95,34 @@ fun RoutesScreen() {
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .clip(RoundedCornerShape(24.dp))
-                    .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.9f)) // Fondo más opaco
-                    .border(
-                        width = 1.dp,
-                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.15f),
-                        shape = RoundedCornerShape(24.dp)
-                    )
+                    .clip(shape)
+                    .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.9f))
+                    .border(1.dp, MaterialTheme.colorScheme.onSurface.copy(alpha = 0.15f), shape)
                     .padding(23.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
+                // Título de sección
                 Text(
                     text = "Rutas",
                     style = MaterialTheme.typography.headlineMedium.copy(fontWeight = FontWeight.Bold),
-                    color = MaterialTheme.colorScheme.onBackground
+                    color = onBackgroundColor
                 )
 
                 Spacer(modifier = Modifier.height(17.dp))
 
+                // Texto informativo
                 Text(
                     text = "Próximamente podrás consultar tus rutas desde aquí.",
                     style = MaterialTheme.typography.bodyLarge.copy(
                         fontSize = 18.sp,
                         lineHeight = 24.sp
                     ),
-                    color = MaterialTheme.colorScheme.onBackground,
+                    color = onBackgroundColor,
                     modifier = Modifier
                         .fillMaxWidth(0.85f)
-                        .padding(horizontal = 0.dp)
                         .align(Alignment.CenterHorizontally),
                     textAlign = TextAlign.Center
                 )
-
             }
         }
     }

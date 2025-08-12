@@ -1,5 +1,6 @@
 package com.orizzonter.app.features.home.screens.community
 
+// Importación de componentes necesarios para la interfaz y diseño
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -9,9 +10,9 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.Send
 import androidx.compose.material.icons.filled.ChatBubbleOutline
 import androidx.compose.material.icons.filled.FavoriteBorder
-import androidx.compose.material.icons.filled.Send
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -25,6 +26,7 @@ import com.orizzonter.app.R
 
 @Composable
 fun CommunityScreen() {
+    // Lista de publicaciones simuladas
     val communityPosts = listOf(
         CommunityPost(
             user = "Andrés Velasco",
@@ -34,7 +36,6 @@ fun CommunityScreen() {
             comments = 5,
             imageResId = R.drawable.popayan
         ),
-
         CommunityPost(
             user = "Laura Fernández",
             avatarResId = R.drawable.avatarmujer,
@@ -79,32 +80,33 @@ fun CommunityScreen() {
             comments = 10,
             imageResId = R.drawable.logo_orizzonter
         )
-
     )
 
+    // Estructura principal con botón flotante
     Scaffold(
         floatingActionButton = {
-            Box(modifier = Modifier.padding(bottom = 100.dp)) {
-                FloatingActionButton(
-                    onClick = { /* Acción para nueva publicación */ },
-                    containerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f),
-                    contentColor = MaterialTheme.colorScheme.primary,
-                    elevation = FloatingActionButtonDefaults.elevation(0.dp)
-                ) {
-                    Icon(Icons.Default.Send, contentDescription = "Publicar")
-                }
+            FloatingActionButton(
+                onClick = { /* Acción para nueva publicación */ },
+                containerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f),
+                contentColor = MaterialTheme.colorScheme.primary,
+                elevation = FloatingActionButtonDefaults.elevation(0.dp),
+                modifier = Modifier.padding(bottom = 100.dp)
+            ) {
+                Icon(Icons.AutoMirrored.Filled.Send, contentDescription = "Publicar")
             }
         },
         containerColor = MaterialTheme.colorScheme.background
     ) { paddingValues ->
+        // Lista vertical de publicaciones
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(paddingValues) // Respeta la NavigationBar
-                .padding(horizontal = 24.dp), // Espaciado lateral
-            contentPadding = PaddingValues(bottom = 16.dp, top = 16.dp),
+                .padding(paddingValues)
+                .padding(horizontal = 24.dp),
+            contentPadding = PaddingValues(vertical = 16.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
+            // Mostrar cada publicación
             items(communityPosts) { post ->
                 CommunityPostCard(post)
             }
@@ -112,6 +114,7 @@ fun CommunityScreen() {
     }
 }
 
+// Modelo de datos para una publicación
 data class CommunityPost(
     val user: String,
     val avatarResId: Int,
@@ -123,38 +126,40 @@ data class CommunityPost(
 
 @Composable
 fun CommunityPostCard(post: CommunityPost) {
+    // Tarjeta de publicación
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(24.dp))
             .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.1f))
             .border(
-                width = 1.dp,
-                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.15f),
-                shape = RoundedCornerShape(24.dp)
+                1.dp,
+                MaterialTheme.colorScheme.onSurface.copy(alpha = 0.15f),
+                RoundedCornerShape(24.dp)
             ),
         colors = CardDefaults.cardColors(containerColor = Color.Transparent),
-        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
+        elevation = CardDefaults.cardElevation(0.dp)
     ) {
         Column(modifier = Modifier.padding(32.dp)) {
+            // Encabezado con avatar y usuario
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Image(
-                    painter = painterResource(id = post.avatarResId),
+                    painter = painterResource(post.avatarResId),
                     contentDescription = "Avatar de ${post.user}",
                     modifier = Modifier
                         .size(40.dp)
                         .clip(CircleShape)
                 )
-                Spacer(modifier = Modifier.width(12.dp))
+                Spacer(Modifier.width(12.dp))
                 Column {
                     Text(
-                        text = post.user,
+                        post.user,
                         style = MaterialTheme.typography.bodyLarge.copy(
                             color = MaterialTheme.colorScheme.onBackground
                         )
                     )
                     Text(
-                        text = "Hace 2 horas",
+                        "Hace 2 horas",
                         style = MaterialTheme.typography.bodySmall.copy(
                             color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f)
                         )
@@ -162,10 +167,11 @@ fun CommunityPostCard(post: CommunityPost) {
                 }
             }
 
+            // Imagen si existe
             post.imageResId?.let {
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(Modifier.height(16.dp))
                 Image(
-                    painter = painterResource(id = it),
+                    painter = painterResource(it),
                     contentDescription = "Imagen de publicación",
                     modifier = Modifier
                         .fillMaxWidth()
@@ -175,35 +181,37 @@ fun CommunityPostCard(post: CommunityPost) {
                 )
             }
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(Modifier.height(16.dp))
 
+            // Texto de la publicación
             Text(
-                text = post.text,
+                post.text,
                 style = MaterialTheme.typography.bodyMedium.copy(
                     color = MaterialTheme.colorScheme.onBackground
                 )
             )
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(Modifier.height(16.dp))
 
+            // Iconos de likes y comentarios
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Icon(
                     Icons.Default.FavoriteBorder,
                     contentDescription = "Me gusta",
                     tint = MaterialTheme.colorScheme.onBackground
                 )
-                Spacer(modifier = Modifier.width(8.dp))
-                Text(text = "${post.likes}", color = MaterialTheme.colorScheme.onBackground)
+                Spacer(Modifier.width(8.dp))
+                Text("${post.likes}", color = MaterialTheme.colorScheme.onBackground)
 
-                Spacer(modifier = Modifier.width(24.dp))
+                Spacer(Modifier.width(24.dp))
 
                 Icon(
                     Icons.Default.ChatBubbleOutline,
                     contentDescription = "Comentarios",
                     tint = MaterialTheme.colorScheme.onBackground
                 )
-                Spacer(modifier = Modifier.width(8.dp))
-                Text(text = "${post.comments}", color = MaterialTheme.colorScheme.onBackground)
+                Spacer(Modifier.width(8.dp))
+                Text("${post.comments}", color = MaterialTheme.colorScheme.onBackground)
             }
         }
     }

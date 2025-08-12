@@ -17,16 +17,18 @@ import androidx.navigation.NavController
 
 @Composable
 fun CreateAccountScreen(navController: NavController) {
+    // Estados para los campos de entrada
     var name by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
 
+    // Contenedor principal con fondo de pantalla
     Box(
         modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
     ) {
-        //  Ola superior
+        // Onda decorativa en la parte superior
         WaveShape(
             modifier = Modifier
                 .fillMaxWidth()
@@ -36,7 +38,7 @@ fun CreateAccountScreen(navController: NavController) {
             isTop = true
         )
 
-        //  Ola inferior
+        // Onda decorativa en la parte inferior
         WaveShape(
             modifier = Modifier
                 .fillMaxWidth()
@@ -46,99 +48,77 @@ fun CreateAccountScreen(navController: NavController) {
             isTop = false
         )
 
-        // Contenido central
+        // Contenido central con padding
         Box(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(24.dp),
             contentAlignment = Alignment.Center
         ) {
+            // Formulario de registro con bordes y fondo semitransparente
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
                     .clip(RoundedCornerShape(24.dp))
                     .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.1f))
-                    .border(1.dp, MaterialTheme.colorScheme.onSurface.copy(alpha = 0.15f), RoundedCornerShape(24.dp))
+                    .border(
+                        1.dp,
+                        MaterialTheme.colorScheme.onSurface.copy(alpha = 0.15f),
+                        RoundedCornerShape(24.dp)
+                    )
                     .padding(32.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
+                // Título
                 Text(
                     text = "Crear cuenta",
                     style = MaterialTheme.typography.headlineMedium.copy(fontWeight = FontWeight.Bold),
                     color = MaterialTheme.colorScheme.onBackground
                 )
 
-                Spacer(modifier = Modifier.height(32.dp))
+                Spacer(Modifier.height(32.dp))
 
-                // Campo Nombre
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(56.dp)
-                        .clip(RoundedCornerShape(14.dp))
-                        .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.1f))
-                        .border(1.dp, MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f), RoundedCornerShape(14.dp))
-                        .padding(horizontal = 16.dp),
-                    contentAlignment = Alignment.CenterStart
-                ) {
-                    Text(
-                        text = if (name.isEmpty()) "Nombre completo" else name,
-                        color = if (name.isEmpty()) MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f) else MaterialTheme.colorScheme.onBackground,
-                        fontSize = 16.sp
-                    )
-                }
+                // Campo: Nombre completo (placeholder visible pero no editable)
+                InputField(
+                    text = name,
+                    placeholder = "Nombre completo",
+                )
 
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(Modifier.height(16.dp))
 
-                // Campo Email
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(56.dp)
-                        .clip(RoundedCornerShape(14.dp))
-                        .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.1f))
-                        .border(1.dp, MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f), RoundedCornerShape(14.dp))
-                        .padding(horizontal = 16.dp),
-                    contentAlignment = Alignment.CenterStart
-                ) {
-                    Text(
-                        text = if (email.isEmpty()) "Correo electrónico" else email,
-                        color = if (email.isEmpty()) MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f) else MaterialTheme.colorScheme.onBackground,
-                        fontSize = 16.sp
-                    )
-                }
+                // Campo: Correo electrónico
+                InputField(
+                    text = email,
+                    placeholder = "Correo electrónico",
+                )
 
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(Modifier.height(16.dp))
 
-                // Campo Contraseña
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(56.dp)
-                        .clip(RoundedCornerShape(14.dp))
-                        .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.1f))
-                        .border(1.dp, MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f), RoundedCornerShape(14.dp))
-                        .padding(horizontal = 16.dp),
-                    contentAlignment = Alignment.CenterStart
-                ) {
-                    Text(
-                        text = if (password.isEmpty()) "Contraseña" else "*".repeat(password.length),
-                        color = if (password.isEmpty()) MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f) else MaterialTheme.colorScheme.onBackground,
-                        fontSize = 16.sp
-                    )
-                }
+                // Campo: Contraseña (con asteriscos simulados)
+                InputField(
+                    text = password,
+                    placeholder = "Contraseña",
+                    isPassword = true
+                )
 
-                Spacer(modifier = Modifier.height(32.dp))
+                Spacer(Modifier.height(32.dp))
 
-                // Botón Registrarse
+                // Botón de "Registrarse"
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(56.dp)
                         .clip(RoundedCornerShape(16.dp))
                         .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.15f))
-                        .border(1.5.dp, MaterialTheme.colorScheme.primary.copy(alpha = 0.4f), RoundedCornerShape(16.dp))
-                        .clickable { navController.navigate("home") },
+                        .border(
+                            1.5.dp,
+                            MaterialTheme.colorScheme.primary.copy(alpha = 0.4f),
+                            RoundedCornerShape(16.dp)
+                        )
+                        .clickable {
+                            // Acción de registro (aquí navega a "home")
+                            navController.navigate("home")
+                        },
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
@@ -149,8 +129,9 @@ fun CreateAccountScreen(navController: NavController) {
                     )
                 }
 
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(Modifier.height(16.dp))
 
+                // Enlace para usuarios que ya tienen cuenta
                 TextButton(onClick = { navController.popBackStack() }) {
                     Text(
                         "¿Ya tienes cuenta? Inicia sesión",
@@ -163,3 +144,39 @@ fun CreateAccountScreen(navController: NavController) {
     }
 }
 
+@Composable
+private fun InputField(
+    text: String,
+    placeholder: String,
+    isPassword: Boolean = false
+) {
+    // Caja de estilo que simula un campo de entrada
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(56.dp)
+            .clip(RoundedCornerShape(14.dp))
+            .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.1f))
+            .border(
+                1.dp,
+                MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f),
+                RoundedCornerShape(14.dp)
+            )
+            .padding(horizontal = 16.dp),
+        contentAlignment = Alignment.CenterStart
+    ) {
+        // Muestra el texto ingresado o el placeholder
+        Text(
+            text = when {
+                text.isEmpty() -> placeholder
+                isPassword -> "*".repeat(text.length) // Oculta contraseña
+                else -> text
+            },
+            color = if (text.isEmpty())
+                MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
+            else
+                MaterialTheme.colorScheme.onBackground,
+            fontSize = 16.sp
+        )
+    }
+}
