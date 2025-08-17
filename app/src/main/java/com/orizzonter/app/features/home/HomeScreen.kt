@@ -1,4 +1,4 @@
- package com.orizzonter.app.features.home
+package com.orizzonter.app.features.home
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
@@ -13,6 +13,7 @@ import androidx.navigation.compose.rememberNavController
 import com.orizzonter.app.features.home.components.BottomBar
 import com.orizzonter.app.features.home.screens.community.CommunityScreen
 import com.orizzonter.app.features.home.screens.routes.RoutesScreen
+import com.orizzonter.app.features.home.screens.services.ServiceDetailScreen
 import com.orizzonter.app.features.home.screens.services.ServicesScreen
 import com.orizzonter.app.features.home.screens.settings.SettingsScreen
 import com.orizzonter.app.features.auth.data.AuthPreferences
@@ -26,7 +27,6 @@ fun HomeScreen(
     val authPreferences = remember { AuthPreferences(context) }
 
     val navController = rememberNavController()
-
     val coroutineScope = rememberCoroutineScope()
 
     Scaffold(
@@ -38,7 +38,7 @@ fun HomeScreen(
             modifier = Modifier.padding(padding)
         ) {
             composable("routes") { RoutesScreen() }
-            composable("services") { ServicesScreen() }
+            composable("services") { ServicesScreen(navController) }  // Pasamos el NavController
             composable("social") { CommunityScreen() }
             composable("settings") {
                 SettingsScreen(
@@ -51,6 +51,13 @@ fun HomeScreen(
                         }
                     }
                 )
+            }
+
+            // Ruta de detalles del servicio
+            composable("serviceDetail/{title}/{description}") { backStackEntry ->
+                val title = backStackEntry.arguments?.getString("title") ?: ""
+                val description = backStackEntry.arguments?.getString("description") ?: ""
+                ServiceDetailScreen(title, description, navController)
             }
         }
     }

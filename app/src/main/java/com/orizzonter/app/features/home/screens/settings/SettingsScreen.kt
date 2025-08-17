@@ -56,7 +56,7 @@ fun SettingsScreen(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Image(
-                painter = painterResource(R.drawable.fotoperfil),
+                painter = painterResource(R.drawable.perfil),
                 contentDescription = "Foto de perfil",
                 modifier = Modifier
                     .size(96.dp)

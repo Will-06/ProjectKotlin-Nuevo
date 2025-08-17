@@ -208,7 +208,7 @@ fun NextButton(
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 90.dp , vertical = 5.dp)
+            .padding(horizontal = 90.dp , vertical = 15.dp)
             .height(size)
             .clip(RoundedCornerShape(16.dp))
             .background(backgroundColor)

@@ -3,6 +3,7 @@ package com.orizzonter.app.features.home.screens.services
 // Importación de componentes de UI y diseño
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
@@ -20,9 +21,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 
 @Composable
-fun ServicesScreen() {
+fun ServicesScreen(navController: NavController) {
     // Estructura principal de la pantalla
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background
@@ -40,7 +42,7 @@ fun ServicesScreen() {
 
             Spacer(Modifier.height(32.dp))
 
-            ServiceList() // Lista de servicios disponibles
+            ServiceList(navController) // Lista de servicios disponibles
 
             Spacer(Modifier.height(48.dp))
         }
@@ -70,7 +72,7 @@ private fun Header() {
 }
 
 @Composable
-private fun ServiceList() {
+private fun ServiceList(navController: NavController) {
     // Lista de servicios con título, descripción e ícono
     val services = listOf(
         Triple("Taller de Bicis", "Repara y mantén tu bicicleta con los mejores expertos.", Icons.Default.Build),
@@ -78,7 +80,18 @@ private fun ServiceList() {
         Triple("Alquiler de Bicicletas", "Encuentra bicicletas disponibles para cualquier tipo de aventura.", Icons.Default.DirectionsBike),
         Triple("Tiendas Especializadas", "Compra accesorios y equipo de calidad para tu ciclismo.", Icons.Default.Storefront),
         Triple("Consejos de Salud", "Información sobre nutrición, cuidado y bienestar para ciclistas.", Icons.Default.HealthAndSafety),
-        Triple("Puntos de Hidratación", "Localiza estaciones para hidratarte durante tus rutas.", Icons.Default.LocalCafe)
+        Triple("Puntos de Hidratación", "Localiza estaciones para hidratarte durante tus rutas.", Icons.Default.LocalCafe),
+        // Nuevos servicios agregados
+        Triple("Cicloturismo", "Descubre experiencias turísticas en bicicleta por lugares emblemáticos.", Icons.Default.Explore),
+        Triple("Taller Móvil", "Servicio de reparación que viene a tu ubicación cuando lo necesites.", Icons.Default.MiscellaneousServices),
+        Triple("Eventos Ciclísticos", "Participa en competencias y reuniones para ciclistas.", Icons.Default.Event),
+        Triple("Seguros para Bicis", "Protege tu bicicleta contra robos y daños accidentales.", Icons.Default.Security),
+        Triple("Estacionamientos Seguros", "Lugares vigilados para dejar tu bicicleta con tranquilidad.", Icons.Default.Lock),
+        Triple("Clínicas de Mantenimiento", "Talleres periódicos para mantener tu bici en óptimas condiciones.", Icons.Default.Handyman),
+        Triple("Alquiler de Equipos", "Cascos, luces y otros accesorios disponibles para rentar.", Icons.Default.Devices),
+        Triple("Rutas Nocturnas", "Recorridos grupales con iluminación y seguridad para ciclistas.", Icons.Default.Nightlight),
+        Triple("Asesoría Personalizada", "Expertos que te ayudan a elegir la bicicleta perfecta para ti.", Icons.Default.PersonSearch),
+        Triple("Comunidad Ciclista", "Conéctate con otros entusiastas del ciclismo en tu área.", Icons.Default.Group)
     )
 
     Column(
@@ -88,13 +101,16 @@ private fun ServiceList() {
         verticalArrangement = Arrangement.spacedBy(20.dp) // Espaciado entre tarjetas
     ) {
         services.forEach { (title, description, icon) ->
-            ServiceMiniCard(title, description, icon) // Tarjeta de cada servicio
+            ServiceMiniCard(title, description, icon) { // Pasamos el navController
+                // Navegar a la pantalla de detalles
+                navController.navigate("serviceDetail/${title}/${description}")
+            }
         }
     }
 }
 
 @Composable
-fun ServiceMiniCard(title: String, description: String, icon: ImageVector) {
+fun ServiceMiniCard(title: String, description: String, icon: ImageVector, onClick: () -> Unit) {
     // Tarjeta individual de servicio
     Row(
         modifier = Modifier
@@ -106,7 +122,8 @@ fun ServiceMiniCard(title: String, description: String, icon: ImageVector) {
                 color = MaterialTheme.colorScheme.outline.copy(alpha = 0.3f),
                 shape = RoundedCornerShape(20.dp)
             )
-            .padding(16.dp),
+            .padding(16.dp)
+            .clickable { onClick() },  // Agregar la acción de clic
         verticalAlignment = Alignment.CenterVertically
     ) {
         // Ícono del servicio
