@@ -1,11 +1,12 @@
 package com.orizzonter.app.features.auth
 
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
+import android.util.Patterns
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -14,28 +15,42 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.Fill
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import androidx.compose.foundation.Canvas
 import com.orizzonter.app.R
+import com.orizzonter.app.features.auth.data.AuthPreferences
+import com.orizzonter.app.features.auth.data.LocalAuthRepository
 
-// Pantalla de inicio de sesión
 @Composable
 fun LoginScreen(navController: NavController) {
-    // Estado para email y contraseña
+    val context = LocalContext.current
+    val prefs = remember { AuthPreferences(context) }
+    val viewModel = remember { AuthViewModel(LocalAuthRepository(prefs)) }
+    val authState by viewModel.authState.collectAsState()
+
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+    var errorMessage by remember { mutableStateOf<String?>(null) }
 
-    // Contenedor principal con fondo
+    LaunchedEffect(authState) {
+        if (authState is AuthState.Success) {
+            navController.navigate("home") {
+                popUpTo("login") { inclusive = true }
+            }
+        }
+    }
+
     Box(
         modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
     ) {
-        // Onda decorativa en la parte superior
         WaveShape(
             modifier = Modifier
                 .fillMaxWidth()
@@ -45,7 +60,6 @@ fun LoginScreen(navController: NavController) {
             isTop = true
         )
 
-        // Onda decorativa en la parte inferior
         WaveShape(
             modifier = Modifier
                 .fillMaxWidth()
@@ -55,14 +69,12 @@ fun LoginScreen(navController: NavController) {
             isTop = false
         )
 
-        // Caja central para los campos y botones
         Box(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(24.dp),
             contentAlignment = Alignment.Center
         ) {
-            // Columna con estilo de fondo, bordes y padding
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -76,7 +88,6 @@ fun LoginScreen(navController: NavController) {
                     .padding(vertical = 32.dp, horizontal = 32.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                // Título de la pantalla
                 Text(
                     text = "Iniciar sesión",
                     style = MaterialTheme.typography.headlineMedium.copy(fontWeight = FontWeight.Bold),
@@ -85,56 +96,62 @@ fun LoginScreen(navController: NavController) {
 
                 Spacer(Modifier.height(32.dp))
 
-                // Campo para email
-                OutlinedTextField(
+                AuthTextField(
                     value = email,
-                    onValueChange = { email = it },
-                    placeholder = { Text("Correo electrónico") },
-                    modifier = Modifier.fillMaxWidth().height(56.dp),
-                    shape = RoundedCornerShape(14.dp),
-                    singleLine = true
+                    onValueChange = {
+                        email = it
+                        errorMessage = null
+                    },
+                    placeholder = "Correo electrónico"
                 )
 
                 Spacer(Modifier.height(16.dp))
 
-                // Campo para contraseña
-                OutlinedTextField(
+                AuthTextField(
                     value = password,
-                    onValueChange = { password = it },
-                    placeholder = { Text("Contraseña") },
-                    modifier = Modifier.fillMaxWidth().height(56.dp),
-                    shape = RoundedCornerShape(14.dp),
-                    singleLine = true
+                    onValueChange = {
+                        password = it
+                        errorMessage = null
+                    },
+                    placeholder = "Contraseña",
+                    isPassword = true
                 )
 
                 Spacer(Modifier.height(32.dp))
 
-                // Botón para iniciar sesión
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(56.dp)
-                        .clip(RoundedCornerShape(16.dp))
-                        .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.15f))
-                        .border(
-                            1.5.dp,
-                            MaterialTheme.colorScheme.primary.copy(alpha = 0.4f),
-                            RoundedCornerShape(16.dp)
-                        )
-                        .clickable { navController.navigate("home") }, // Navega a home al hacer click
-                    contentAlignment = Alignment.Center
-                ) {
+                LoginButton {
+                    when {
+                        email.isBlank() || password.isBlank() -> {
+                            errorMessage = "Completa todos los campos"
+                        }
+                        !Patterns.EMAIL_ADDRESS.matcher(email).matches() -> {
+                            errorMessage = "Correo no válido"
+                        }
+                        else -> {
+                            errorMessage = null
+                            viewModel.login(email, password)
+                        }
+                    }
+                }
+
+                if (authState is AuthState.Error) {
                     Text(
-                        text = "Iniciar sesión",
-                        color = MaterialTheme.colorScheme.primary,
-                        fontSize = 18.sp,
-                        fontWeight = FontWeight.Bold
+                        text = (authState as AuthState.Error).message,
+                        color = Color.Red,
+                        modifier = Modifier.padding(top = 8.dp)
+                    )
+                }
+
+                errorMessage?.let {
+                    Text(
+                        text = it,
+                        color = Color.Red,
+                        modifier = Modifier.padding(top = 8.dp)
                     )
                 }
 
                 Spacer(Modifier.height(16.dp))
 
-                // Texto botón para recuperar contraseña
                 TextButton(onClick = { navController.navigate("forgot_password") }) {
                     Text(
                         "¿Olvidaste tu contraseña?",
@@ -145,7 +162,6 @@ fun LoginScreen(navController: NavController) {
 
                 Spacer(Modifier.height(24.dp))
 
-                // Texto separador para métodos alternativos
                 Text(
                     text = "O continúa con",
                     color = MaterialTheme.colorScheme.onBackground,
@@ -154,27 +170,24 @@ fun LoginScreen(navController: NavController) {
 
                 Spacer(Modifier.height(16.dp))
 
-                // Botones para login social (Google, Facebook, Twitter)
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceEvenly,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    SocialLoginButton(R.drawable.google) { /* Acción login Google */ }
-                    SocialLoginButton(R.drawable.facebook) { /* Acción login Facebook */ }
-                    SocialLoginButton(R.drawable.twitter) { /* Acción login WhatsApp */ }
+                    SocialLoginButton(R.drawable.google) {}
+                    SocialLoginButton(R.drawable.facebook) {}
+                    SocialLoginButton(R.drawable.twitter) {}
                 }
 
                 Spacer(Modifier.height(32.dp))
 
-                // Texto para invitar a registrarse
                 Text(
                     text = "¿No tienes cuenta?",
                     color = MaterialTheme.colorScheme.onBackground,
                     fontWeight = FontWeight.Medium
                 )
 
-                // Botón para ir a crear cuenta
                 TextButton(onClick = { navController.navigate("create_account") }) {
                     Text(
                         "Regístrate aquí",
@@ -187,7 +200,64 @@ fun LoginScreen(navController: NavController) {
     }
 }
 
-// Botón para login con redes sociales con icono y clickeable
+@Composable
+private fun AuthTextField(
+    value: String,
+    onValueChange: (String) -> Unit,
+    placeholder: String,
+    isPassword: Boolean = false
+) {
+    var passwordVisible by remember { mutableStateOf(false) }
+
+    OutlinedTextField(
+        value = value,
+        onValueChange = onValueChange,
+        placeholder = { Text(placeholder) },
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(56.dp),
+        shape = RoundedCornerShape(14.dp),
+        singleLine = true,
+        visualTransformation = if (isPassword && !passwordVisible) PasswordVisualTransformation() else VisualTransformation.None,
+        trailingIcon = {
+            if (isPassword) {
+                val image = if (passwordVisible)
+                    Icons.Filled.Visibility
+                else Icons.Filled.VisibilityOff
+
+                IconButton(onClick = { passwordVisible = !passwordVisible }) {
+                    Icon(imageVector = image, contentDescription = if (passwordVisible) "Ocultar" else "Mostrar")
+                }
+            }
+        }
+    )
+}
+
+@Composable
+private fun LoginButton(onClick: () -> Unit) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(56.dp)
+            .clip(RoundedCornerShape(16.dp))
+            .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.15f))
+            .border(
+                1.5.dp,
+                MaterialTheme.colorScheme.primary.copy(alpha = 0.4f),
+                RoundedCornerShape(16.dp)
+            )
+            .clickable(onClick = onClick),
+        contentAlignment = Alignment.Center
+    ) {
+        Text(
+            text = "Iniciar sesión",
+            color = MaterialTheme.colorScheme.primary,
+            fontSize = 18.sp,
+            fontWeight = FontWeight.Bold
+        )
+    }
+}
+
 @Composable
 fun SocialLoginButton(iconResId: Int, onClick: () -> Unit) {
     Box(
@@ -211,7 +281,6 @@ fun SocialLoginButton(iconResId: Int, onClick: () -> Unit) {
     }
 }
 
-// Composable que dibuja una forma de onda en la parte superior o inferior
 @Composable
 fun WaveShape(
     modifier: Modifier = Modifier,
@@ -225,30 +294,19 @@ fun WaveShape(
 
         val path = Path().apply {
             if (isTop) {
-                // Onda en la parte superior
                 moveTo(0f, height)
-                cubicTo(
-                    width * 0.25f, height - waveHeight,
-                    width * 0.75f, height + waveHeight,
-                    width, height
-                )
+                cubicTo(width * 0.25f, height - waveHeight, width * 0.75f, height + waveHeight, width, height)
                 lineTo(width, 0f)
                 lineTo(0f, 0f)
             } else {
-                // Onda en la parte inferior
                 moveTo(0f, 0f)
-                cubicTo(
-                    width * 0.25f, waveHeight,
-                    width * 0.75f, -waveHeight,
-                    width, 0f
-                )
+                cubicTo(width * 0.25f, waveHeight, width * 0.75f, -waveHeight, width, 0f)
                 lineTo(width, height)
                 lineTo(0f, height)
             }
             close()
         }
 
-        // Dibuja la forma con el color dado
         drawPath(path, color, style = Fill)
     }
 }

@@ -11,7 +11,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -20,13 +20,26 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.orizzonter.app.R
 import com.orizzonter.app.core.designsystem.LocalAppTheme
+import com.orizzonter.app.features.auth.data.AuthPreferences
+import kotlinx.coroutines.launch
 
 @Composable
-fun SettingsScreen(onLogout: () -> Unit = {}) {
+fun SettingsScreen(
+    authPreferences: AuthPreferences,
+    onLogout: () -> Unit = {}
+) {
     val theme = LocalAppTheme.current
     val scrollState = rememberScrollState()
 
-    // Contenedor principal con scroll vertical
+    var userName by remember { mutableStateOf<String?>(null) }
+    var userEmail by remember { mutableStateOf<String?>(null) }
+
+    // Cargar datos de usuario cuando la pantalla se monta
+    LaunchedEffect(Unit) {
+        userName = authPreferences.getUserName()
+        userEmail = authPreferences.getUserEmail()
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -35,7 +48,7 @@ fun SettingsScreen(onLogout: () -> Unit = {}) {
     ) {
         Spacer(Modifier.height(24.dp))
 
-        // Sección de perfil centrado
+        // Perfil con nombre y correo dinámicos
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -50,9 +63,9 @@ fun SettingsScreen(onLogout: () -> Unit = {}) {
                     .clip(CircleShape) // Imagen circular
             )
             Spacer(Modifier.height(8.dp))
-            Text("Orizzonter", style = MaterialTheme.typography.bodyLarge)
+            Text(userName ?: "Usuario", style = MaterialTheme.typography.bodyLarge)
             Text(
-                "orizzonter@gmail.com",
+                userEmail ?: "usuario@correo.com",
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
@@ -120,7 +133,6 @@ fun SettingToggle(
     checked: Boolean,
     onCheckedChange: (Boolean) -> Unit = {}
 ) {
-    // Fila con título y switch para activar/desactivar opción
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -154,7 +166,6 @@ fun SettingToggle(
 
 @Composable
 fun SettingSelector(title: String, selected: String) {
-    // Fila con título y opción seleccionada con ícono desplegable
     Row(
         modifier = Modifier
             .fillMaxWidth()

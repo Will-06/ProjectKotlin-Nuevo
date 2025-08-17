@@ -1,9 +1,12 @@
-package com.orizzonter.app.features.home
+ package com.orizzonter.app.features.home
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -12,27 +15,43 @@ import com.orizzonter.app.features.home.screens.community.CommunityScreen
 import com.orizzonter.app.features.home.screens.routes.RoutesScreen
 import com.orizzonter.app.features.home.screens.services.ServicesScreen
 import com.orizzonter.app.features.home.screens.settings.SettingsScreen
+import com.orizzonter.app.features.auth.data.AuthPreferences
+import kotlinx.coroutines.launch
 
 @Composable
-fun HomeScreen() {
-    // Controlador de navegación para manejar la navegación interna de pestañas
+fun HomeScreen(
+    onLogoutSuccess: () -> Unit  // callback para que AppNavGraph pueda reaccionar al logout
+) {
+    val context = LocalContext.current
+    val authPreferences = remember { AuthPreferences(context) }
+
     val navController = rememberNavController()
 
+    val coroutineScope = rememberCoroutineScope()
+
     Scaffold(
-        // Barra inferior que recibe el navController para controlar la navegación
         bottomBar = { BottomBar(navController) }
     ) { padding ->
-        // Contenedor de navegación interna con rutas definidas
         NavHost(
             navController = navController,
-            startDestination = "routes", // Pantalla inicial
-            modifier = Modifier.padding(padding) // Ajusta el padding según Scaffold
+            startDestination = "routes",
+            modifier = Modifier.padding(padding)
         ) {
-            // Cada "composable" es una pantalla vinculada a una ruta específica
             composable("routes") { RoutesScreen() }
             composable("services") { ServicesScreen() }
             composable("social") { CommunityScreen() }
-            composable("settings") { SettingsScreen() }
+            composable("settings") {
+                SettingsScreen(
+                    authPreferences = authPreferences,
+                    onLogout = {
+                        coroutineScope.launch {
+                            authPreferences.logout()
+                            // Navegar fuera de home al login
+                            onLogoutSuccess()
+                        }
+                    }
+                )
+            }
         }
     }
 }

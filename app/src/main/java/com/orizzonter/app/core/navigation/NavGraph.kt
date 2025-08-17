@@ -28,13 +28,19 @@ fun AppNavGraph() {
         // Pantalla de inicio de sesión
         composable("login") { LoginScreen(navController) }
 
-        // Pantalla principal del usuario
-        composable("home") { HomeScreen() }
 
         // Pantalla para recuperar contraseña
         composable("forgot_password") { ForgotPasswordScreen(navController) }
 
         // Pantalla para crear una nueva cuenta
         composable("create_account") { CreateAccountScreen(navController) }
+        composable("home") {
+            HomeScreen(onLogoutSuccess = {
+                navController.navigate("login") {
+                    popUpTo("home") { inclusive = true }
+                }
+            })
+        }
+
     }
 }

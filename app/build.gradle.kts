@@ -40,6 +40,7 @@ android {
 }
 
 dependencies {
+    implementation(libs.datastore.preferences)
     implementation(libs.coil.compose)
     implementation(libs.compose.material.icons)
     implementation(libs.material)

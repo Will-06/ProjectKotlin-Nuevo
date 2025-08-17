@@ -10,25 +10,32 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.orizzonter.app.features.auth.data.AuthPreferences
+import com.orizzonter.app.features.auth.data.LocalAuthRepository
 
 @Composable
 fun CreateAccountScreen(navController: NavController) {
-    // Estados para los campos de entrada
     var name by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
 
-    // Contenedor principal con fondo de pantalla
+    val context = LocalContext.current
+    val prefs = remember { AuthPreferences(context) }
+    val viewModel = remember { AuthViewModel(LocalAuthRepository(prefs)) }
+    val authState by viewModel.authState.collectAsState()
+
     Box(
         modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
     ) {
-        // Onda decorativa en la parte superior
         WaveShape(
             modifier = Modifier
                 .fillMaxWidth()
@@ -38,7 +45,6 @@ fun CreateAccountScreen(navController: NavController) {
             isTop = true
         )
 
-        // Onda decorativa en la parte inferior
         WaveShape(
             modifier = Modifier
                 .fillMaxWidth()
@@ -48,14 +54,12 @@ fun CreateAccountScreen(navController: NavController) {
             isTop = false
         )
 
-        // Contenido central con padding
         Box(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(24.dp),
             contentAlignment = Alignment.Center
         ) {
-            // Formulario de registro con bordes y fondo semitransparente
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -69,7 +73,6 @@ fun CreateAccountScreen(navController: NavController) {
                     .padding(32.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                // Título
                 Text(
                     text = "Crear cuenta",
                     style = MaterialTheme.typography.headlineMedium.copy(fontWeight = FontWeight.Bold),
@@ -78,60 +81,48 @@ fun CreateAccountScreen(navController: NavController) {
 
                 Spacer(Modifier.height(32.dp))
 
-                // Campo: Nombre completo (placeholder visible pero no editable)
-                InputField(
-                    text = name,
-                    placeholder = "Nombre completo",
-                )
-
+                AuthInputField(value = name, onValueChange = { name = it }, placeholder = "Nombre completo")
                 Spacer(Modifier.height(16.dp))
-
-                // Campo: Correo electrónico
-                InputField(
-                    text = email,
-                    placeholder = "Correo electrónico",
-                )
-
+                AuthInputField(value = email, onValueChange = { email = it }, placeholder = "Correo electrónico")
                 Spacer(Modifier.height(16.dp))
-
-                // Campo: Contraseña (con asteriscos simulados)
-                InputField(
-                    text = password,
+                AuthInputField(
+                    value = password,
+                    onValueChange = { password = it },
                     placeholder = "Contraseña",
                     isPassword = true
                 )
 
                 Spacer(Modifier.height(32.dp))
 
-                // Botón de "Registrarse"
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(56.dp)
-                        .clip(RoundedCornerShape(16.dp))
-                        .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.15f))
-                        .border(
-                            1.5.dp,
-                            MaterialTheme.colorScheme.primary.copy(alpha = 0.4f),
-                            RoundedCornerShape(16.dp)
+                RegisterButton(
+                    onClick = {
+                        if (email.isNotBlank() && password.isNotBlank()) {
+                            viewModel.register(name, email, password)
+                        }
+                    }
+                )
+
+                when (authState) {
+                    is AuthState.Registered -> {
+                        LaunchedEffect(Unit) {
+                            navController.navigate("home") {
+                                popUpTo("create_account") { inclusive = true }
+                            }
+                        }
+                    }
+                    is AuthState.Error -> {
+                        Text(
+                            text = (authState as AuthState.Error).message,
+                            color = MaterialTheme.colorScheme.error,
+                            fontWeight = FontWeight.Medium,
+                            modifier = Modifier.padding(top = 8.dp)
                         )
-                        .clickable {
-                            // Acción de registro (aquí navega a "home")
-                            navController.navigate("home")
-                        },
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(
-                        text = "Registrarse",
-                        color = MaterialTheme.colorScheme.primary,
-                        fontSize = 18.sp,
-                        fontWeight = FontWeight.Bold
-                    )
+                    }
+                    else -> {}
                 }
 
                 Spacer(Modifier.height(16.dp))
 
-                // Enlace para usuarios que ya tienen cuenta
                 TextButton(onClick = { navController.popBackStack() }) {
                     Text(
                         "¿Ya tienes cuenta? Inicia sesión",
@@ -145,38 +136,46 @@ fun CreateAccountScreen(navController: NavController) {
 }
 
 @Composable
-private fun InputField(
-    text: String,
+private fun AuthInputField(
+    value: String,
+    onValueChange: (String) -> Unit,
     placeholder: String,
     isPassword: Boolean = false
 ) {
-    // Caja de estilo que simula un campo de entrada
+    OutlinedTextField(
+        value = value,
+        onValueChange = onValueChange,
+        placeholder = { Text(placeholder) },
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(56.dp),
+        shape = RoundedCornerShape(14.dp),
+        singleLine = true,
+        visualTransformation = if (isPassword) PasswordVisualTransformation() else VisualTransformation.None
+    )
+}
+
+@Composable
+private fun RegisterButton(onClick: () -> Unit) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
             .height(56.dp)
-            .clip(RoundedCornerShape(14.dp))
-            .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.1f))
+            .clip(RoundedCornerShape(16.dp))
+            .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.15f))
             .border(
-                1.dp,
-                MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f),
-                RoundedCornerShape(14.dp)
+                1.5.dp,
+                MaterialTheme.colorScheme.primary.copy(alpha = 0.4f),
+                RoundedCornerShape(16.dp)
             )
-            .padding(horizontal = 16.dp),
-        contentAlignment = Alignment.CenterStart
+            .clickable(onClick = onClick),
+        contentAlignment = Alignment.Center
     ) {
-        // Muestra el texto ingresado o el placeholder
         Text(
-            text = when {
-                text.isEmpty() -> placeholder
-                isPassword -> "*".repeat(text.length) // Oculta contraseña
-                else -> text
-            },
-            color = if (text.isEmpty())
-                MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
-            else
-                MaterialTheme.colorScheme.onBackground,
-            fontSize = 16.sp
+            text = "Registrarse",
+            color = MaterialTheme.colorScheme.primary,
+            fontSize = 18.sp,
+            fontWeight = FontWeight.Bold
         )
     }
 }
