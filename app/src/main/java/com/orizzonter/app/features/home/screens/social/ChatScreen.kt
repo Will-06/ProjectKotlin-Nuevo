@@ -23,32 +23,37 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.orizzonter.app.R
 import kotlinx.coroutines.launch
+import java.time.LocalTime
+import java.time.format.DateTimeFormatter
+
+data class ChatMessage(val text: String, val isUser: Boolean, val time: String)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ChatScreen(navController: NavController) {
+    val formatter = DateTimeFormatter.ofPattern("HH:mm")
+
     val messages = remember {
         mutableStateListOf(
-            "Tú: Hola, ¿me puedes recomendar rutas?",
-            "IA: ¡Hola! Claro que sí. ¿Cómo estás?",
-            "IA: ¿Te puedo hacer una pregunta para ayudarte mejor?",
-            "Tú: Sí, claro.",
-            "IA: Perfecto. ¿Qué tipo de rutas de ciclismo te interesan? ¿Montaña, carretera, algo fácil o más desafiante?",
-            "Tú: Estoy buscando rutas para ciclismo de montaña cerca de mí.",
-            "IA: ¡Genial! Tengo varias opciones cerca de tu ubicación. ¿Quieres que te cuente sobre la dificultad y la distancia de cada ruta?",
-            "Tú: Sí, por favor. También me interesa saber si hay subidas exigentes.",
-            "IA: Por supuesto. La ruta 'Cerro Verde Trail' es de dificultad alta, con varias pendientes pronunciadas y 18 km en total.",
-            "Tú: ¿Hay algún taller cercano en caso de que tenga un problema con la bici?",
-            "IA: Sí, el taller 'BikeFix' está a 2 km de la ruta, abre de 8am a 6pm y tiene buenas reseñas.",
-            "Tú: ¡Perfecto! ¿Qué me recomiendas comer antes de iniciar la ruta?",
-            "IA: Lo mejor es algo ligero y energético, como avena con plátano o pan integral con miel 🍯.",
-            "Tú: ¿Puedo compartir mis rutas con otros ciclistas?",
-            "IA: Sí, en tu perfil puedes compartir rutas, comentar y ver las publicaciones de otros ciclistas 🧭.",
-            "Tú: Gracias, ha sido muy útil.",
-            "IA: ¡De nada! Estoy aquí para ayudarte cuando lo necesites. ¡Disfruta tu ruta! 🚴‍♀️"
+            ChatMessage("Hola, ¿me puedes recomendar rutas?", true, "10:00"),
+            ChatMessage("¡Hola! Claro que sí. ¿Cómo estás?", false, "10:01"),
+            ChatMessage("¿Te puedo hacer una pregunta para ayudarte mejor?", false, "10:02"),
+            ChatMessage("Sí, claro.", true, "10:03"),
+            ChatMessage("Perfecto. ¿Qué tipo de rutas de ciclismo te interesan? ¿Montaña, carretera, algo fácil o más desafiante?", false, "10:04"),
+            ChatMessage("Estoy buscando rutas para ciclismo de montaña cerca de mí.", true, "10:05"),
+            ChatMessage("¡Genial! Tengo varias opciones cerca de tu ubicación. ¿Quieres que te cuente sobre la dificultad y la distancia de cada ruta?", false, "10:06"),
+            ChatMessage("Sí, por favor. También me interesa saber si hay subidas exigentes.", true, "10:07"),
+            ChatMessage("Por supuesto. La ruta 'Cerro Verde Trail' es de dificultad alta, con varias pendientes pronunciadas y 18 km en total.", false, "10:08"),
+            ChatMessage("¿Hay algún taller cercano en caso de que tenga un problema con la bici?", true, "10:09"),
+            ChatMessage("Sí, el taller 'BikeFix' está a 2 km de la ruta, abre de 8am a 6pm y tiene buenas reseñas.", false, "10:10"),
+            ChatMessage("¡Perfecto! ¿Qué me recomiendas comer antes de iniciar la ruta?", true, "10:11"),
+            ChatMessage("Lo mejor es algo ligero y energético, como avena con plátano o pan integral con miel 🍯.", false, "10:12"),
+            ChatMessage("¿Puedo compartir mis rutas con otros ciclistas?", true, "10:13"),
+            ChatMessage("Sí, en tu perfil puedes compartir rutas, comentar y ver las publicaciones de otros ciclistas 🧭.", false, "10:14"),
+            ChatMessage("Gracias, ha sido muy útil.", true, "10:15"),
+            ChatMessage("¡De nada! Estoy aquí para ayudarte cuando lo necesites. ¡Disfruta tu ruta! 🚴‍♀️", false, "10:16")
         )
     }
-
 
     var inputText by remember { mutableStateOf(TextFieldValue()) }
     val listState = rememberLazyListState()
@@ -61,7 +66,6 @@ fun ChatScreen(navController: NavController) {
 
     Scaffold(
         containerColor = bgColor,
-        // Aquí se quitó el floatingActionButton del botón regresar
     ) { padding ->
         Column(
             modifier = Modifier
@@ -71,7 +75,7 @@ fun ChatScreen(navController: NavController) {
                 .padding(horizontal = 16.dp)
         ) {
 
-            // Encabezado estilo WhatsApp
+            // Header estilo WhatsApp
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -79,7 +83,7 @@ fun ChatScreen(navController: NavController) {
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Image(
-                    painter = painterResource(id = R.drawable.ia), // <- Usa tu drawable aquí
+                    painter = painterResource(id = R.drawable.ia),
                     contentDescription = "Foto de perfil",
                     modifier = Modifier
                         .size(48.dp)
@@ -97,7 +101,7 @@ fun ChatScreen(navController: NavController) {
                     Text(
                         text = "En línea",
                         fontSize = 14.sp,
-                        color = Color(0xFF4CAF50), // Verde tipo WhatsApp
+                        color = Color(0xFF4CAF50),
                         fontWeight = FontWeight.Medium
                     )
                 }
@@ -113,27 +117,37 @@ fun ChatScreen(navController: NavController) {
                 verticalArrangement = Arrangement.spacedBy(12.dp),
             ) {
                 items(messages) { msg ->
-                    val isUser = msg.startsWith("Tú:")
-                    val displayMsg = if (isUser) msg.removePrefix("Tú:").trim() else msg
-
                     Box(
                         modifier = Modifier.fillMaxWidth(),
-                        contentAlignment = if (isUser) Alignment.CenterEnd else Alignment.CenterStart
+                        contentAlignment = if (msg.isUser) Alignment.CenterEnd else Alignment.CenterStart
                     ) {
-                        Text(
-                            text = displayMsg,
-                            color = textColor,
-                            fontSize = 16.sp,
-                            fontWeight = FontWeight.Normal,
+                        Column(
                             modifier = Modifier
                                 .background(
-                                    color = if (isUser) userBubbleColor else bubbleColor,
+                                    color = if (msg.isUser) userBubbleColor else bubbleColor,
                                     shape = RoundedCornerShape(16.dp)
                                 )
-                                .padding(14.dp)
-                                // Aquí agrego el ancho máximo para que no se extiendan demasiado
-                                .widthIn(max = 280.dp) // aprox 70-75% de pantalla en la mayoría de móviles
-                        )
+                                .widthIn(max = 280.dp)
+                                .padding(12.dp)
+                        ) {
+                            Text(
+                                text = msg.text,
+                                color = textColor,
+                                fontSize = 16.sp,
+                                fontWeight = FontWeight.Normal,
+                                modifier = Modifier.padding(end = 8.dp, bottom = 4.dp)
+                            )
+                            Box(
+                                modifier = Modifier.fillMaxWidth(),
+                                contentAlignment = if (msg.isUser) Alignment.BottomEnd else Alignment.BottomStart
+                            ) {
+                                Text(
+                                    text = msg.time,
+                                    color = textColor.copy(alpha = 0.5f),
+                                    fontSize = 12.sp,
+                                )
+                            }
+                        }
                     }
                 }
             }
@@ -177,7 +191,8 @@ fun ChatScreen(navController: NavController) {
                 IconButton(
                     onClick = {
                         if (inputText.text.isNotBlank()) {
-                            messages.add("Tú: ${inputText.text}")
+                            val currentTime = LocalTime.now().format(formatter)
+                            messages.add(ChatMessage(inputText.text, true, currentTime))
                             inputText = TextFieldValue()
                             coroutineScope.launch {
                                 listState.animateScrollToItem(messages.size - 1)

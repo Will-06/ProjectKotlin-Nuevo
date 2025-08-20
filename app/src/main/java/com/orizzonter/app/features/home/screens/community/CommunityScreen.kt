@@ -22,10 +22,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.orizzonter.app.R
 
 @Composable
-fun CommunityScreen() {
+fun CommunityScreen(navController: NavController) {
     // Lista de publicaciones simuladas
     val communityPosts = listOf(
         CommunityPost(
@@ -44,7 +45,6 @@ fun CommunityScreen() {
             comments = 2,
             imageResId = null
         ),
-
         CommunityPost(
             user = "Carlos Méndez",
             avatarResId = R.drawable.avatar,
@@ -53,7 +53,6 @@ fun CommunityScreen() {
             comments = 1,
             imageResId = R.drawable.monserrate
         ),
-
         CommunityPost(
             user = "Andrés Velasco",
             avatarResId = R.drawable.avatar,
@@ -62,7 +61,6 @@ fun CommunityScreen() {
             comments = 6,
             imageResId = null
         ),
-
         CommunityPost(
             user = "Laura Fernández",
             avatarResId = R.drawable.avatarmujer,
@@ -71,7 +69,6 @@ fun CommunityScreen() {
             comments = 4,
             imageResId = null
         ),
-
         CommunityPost(
             user = "Orizzonter Team",
             avatarResId = R.drawable.logo_orizzonter,
@@ -86,7 +83,7 @@ fun CommunityScreen() {
     Scaffold(
         floatingActionButton = {
             FloatingActionButton(
-                onClick = { /* Acción para nueva publicación */ },
+                onClick = { navController.navigate("new_post") },
                 containerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f),
                 contentColor = MaterialTheme.colorScheme.primary,
                 elevation = FloatingActionButtonDefaults.elevation(0.dp),
@@ -97,7 +94,6 @@ fun CommunityScreen() {
         },
         containerColor = MaterialTheme.colorScheme.background
     ) { paddingValues ->
-        // Lista vertical de publicaciones
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
@@ -106,7 +102,6 @@ fun CommunityScreen() {
             contentPadding = PaddingValues(vertical = 16.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            // Mostrar cada publicación
             items(communityPosts) { post ->
                 CommunityPostCard(post)
             }
@@ -126,7 +121,6 @@ data class CommunityPost(
 
 @Composable
 fun CommunityPostCard(post: CommunityPost) {
-    // Tarjeta de publicación
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -141,7 +135,6 @@ fun CommunityPostCard(post: CommunityPost) {
         elevation = CardDefaults.cardElevation(0.dp)
     ) {
         Column(modifier = Modifier.padding(32.dp)) {
-            // Encabezado con avatar y usuario
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Image(
                     painter = painterResource(post.avatarResId),
@@ -167,7 +160,6 @@ fun CommunityPostCard(post: CommunityPost) {
                 }
             }
 
-            // Imagen si existe
             post.imageResId?.let {
                 Spacer(Modifier.height(16.dp))
                 Image(
@@ -183,7 +175,6 @@ fun CommunityPostCard(post: CommunityPost) {
 
             Spacer(Modifier.height(16.dp))
 
-            // Texto de la publicación
             Text(
                 post.text,
                 style = MaterialTheme.typography.bodyMedium.copy(
@@ -193,13 +184,11 @@ fun CommunityPostCard(post: CommunityPost) {
 
             Spacer(Modifier.height(16.dp))
 
-            // Iconos de likes y comentarios
-// Iconos de likes y comentarios con mejor color
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Icon(
                     Icons.Default.FavoriteBorder,
                     contentDescription = "Me gusta",
-                    tint = MaterialTheme.colorScheme.primary // Cambiado
+                    tint = MaterialTheme.colorScheme.primary
                 )
                 Spacer(Modifier.width(8.dp))
                 Text("${post.likes}", color = MaterialTheme.colorScheme.onBackground)
@@ -209,12 +198,11 @@ fun CommunityPostCard(post: CommunityPost) {
                 Icon(
                     Icons.Default.ChatBubbleOutline,
                     contentDescription = "Comentarios",
-                    tint = MaterialTheme.colorScheme.secondary // Cambiado
+                    tint = MaterialTheme.colorScheme.secondary
                 )
                 Spacer(Modifier.width(8.dp))
                 Text("${post.comments}", color = MaterialTheme.colorScheme.onBackground)
             }
-
         }
     }
 }

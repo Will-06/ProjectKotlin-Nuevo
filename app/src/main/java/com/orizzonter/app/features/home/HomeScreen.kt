@@ -18,6 +18,7 @@ import com.orizzonter.app.features.home.screens.services.ServiceDetailScreen
 import com.orizzonter.app.features.home.screens.services.ServicesScreen
 import com.orizzonter.app.features.home.screens.settings.SettingsScreen
 import com.orizzonter.app.features.auth.data.AuthPreferences
+import com.orizzonter.app.features.home.screens.social.NewPostScreen
 
 import kotlinx.coroutines.launch
 
@@ -48,8 +49,9 @@ fun HomeScreen(
             }
 
             composable("social") {
-                CommunityScreen()
+                CommunityScreen(navController = navController)
             }
+
 
             composable("settings") {
                 SettingsScreen(
@@ -74,6 +76,10 @@ fun HomeScreen(
             // ** NUEVA RUTA PARA CHAT **
             composable("chat") {
                 ChatScreen(navController = navController)
+            }
+            // Nueva ruta para la pantalla de crear publicación
+            composable("new_post") {
+                NewPostScreen(onBack = { navController.popBackStack() })
             }
         }
     }
