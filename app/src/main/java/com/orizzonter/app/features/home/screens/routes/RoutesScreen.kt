@@ -1,4 +1,3 @@
-package com.orizzonter.app.features.home.screens.routes
 
 // Importación de elementos de UI y diseño
 import androidx.compose.foundation.Image
@@ -20,23 +19,24 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.orizzonter.app.R
+import com.orizzonter.app.core.navigation.CHAT_ROUTE
 
 @Composable
-fun RoutesScreen() {
+fun RoutesScreen(navController: NavController) {
     // Definición de bordes y colores
     val cornerRadius = 24.dp
     val shape = RoundedCornerShape(cornerRadius)
     val onSurfaceAlpha = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f)
     val onBackgroundColor = MaterialTheme.colorScheme.onBackground
 
-    // Contenedor principal
     Box(
         modifier = Modifier
             .fillMaxSize()
             .padding(3.dp)
     ) {
-        // Imagen de fondo (mapa)
+        // Imagen de fondo
         Image(
             painter = painterResource(id = R.drawable.glasssmap2),
             contentDescription = "Mapa de fondo",
@@ -46,7 +46,7 @@ fun RoutesScreen() {
             contentScale = ContentScale.Crop
         )
 
-        // Campo de búsqueda en la parte superior
+        // Campo de búsqueda y botón de chat
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -55,37 +55,63 @@ fun RoutesScreen() {
         ) {
             var searchQuery by remember { mutableStateOf("") }
 
-            // TextField para buscar rutas
-            TextField(
-                value = searchQuery,
-                onValueChange = { searchQuery = it },
-                placeholder = { Text("Buscar una ruta...") },
-                leadingIcon = {
-                    Icon(imageVector = Icons.Default.Search, contentDescription = "Buscar")
-                },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clip(shape)
-                    .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.7f))
-                    .border(1.dp, onSurfaceAlpha, shape)
-                    .padding(horizontal = 4.dp),
-                colors = TextFieldDefaults.colors(
-                    focusedContainerColor = Color.Transparent,
-                    unfocusedContainerColor = Color.Transparent,
-                    cursorColor = MaterialTheme.colorScheme.primary,
-                    focusedIndicatorColor = Color.Transparent,
-                    unfocusedIndicatorColor = Color.Transparent,
-                    focusedPlaceholderColor = onBackgroundColor.copy(alpha = 0.5f),
-                    unfocusedPlaceholderColor = onBackgroundColor.copy(alpha = 0.5f),
-                    focusedTextColor = onBackgroundColor,
-                    unfocusedTextColor = onBackgroundColor
-                ),
-                shape = shape,
-                singleLine = true
-            )
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                // TextField expandible
+                TextField(
+                    value = searchQuery,
+                    onValueChange = { searchQuery = it },
+                    placeholder = { Text("Buscar una ruta...") },
+                    leadingIcon = {
+                        Icon(imageVector = Icons.Default.Search, contentDescription = "Buscar")
+                    },
+                    modifier = Modifier
+                        .weight(1f)
+                        .clip(shape)
+                        .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.7f))
+                        .border(1.dp, onSurfaceAlpha, shape)
+                        .padding(horizontal = 4.dp),
+                    colors = TextFieldDefaults.colors(
+                        focusedContainerColor = Color.Transparent,
+                        unfocusedContainerColor = Color.Transparent,
+                        cursorColor = MaterialTheme.colorScheme.primary,
+                        focusedIndicatorColor = Color.Transparent,
+                        unfocusedIndicatorColor = Color.Transparent,
+                        focusedPlaceholderColor = onBackgroundColor.copy(alpha = 0.5f),
+                        unfocusedPlaceholderColor = onBackgroundColor.copy(alpha = 0.5f),
+                        focusedTextColor = onBackgroundColor,
+                        unfocusedTextColor = onBackgroundColor
+                    ),
+                    shape = shape,
+                    singleLine = true
+                )
+
+                Spacer(modifier = Modifier.width(8.dp))
+
+// Botón de chat con nuevo color
+                IconButton(
+                    onClick = {
+                        navController.navigate(CHAT_ROUTE) // Navega al chat
+                    },
+                    modifier = Modifier
+                        .size(38.dp)
+                        .clip(RoundedCornerShape(14.dp))
+                        .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.7f))
+                        .border(1.dp, onSurfaceAlpha, RoundedCornerShape(14.dp))
+                ) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.ia),
+                        contentDescription = "Chat",
+                        tint = MaterialTheme.colorScheme.primary // Nuevo color
+                    )
+                }
+
+            }
         }
 
-        // Mensaje central informando funcionalidad futura
+        // Mensaje informativo en el centro
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -101,7 +127,6 @@ fun RoutesScreen() {
                     .padding(23.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                // Título de sección
                 Text(
                     text = "Rutas",
                     style = MaterialTheme.typography.headlineMedium.copy(fontWeight = FontWeight.Bold),
@@ -110,7 +135,6 @@ fun RoutesScreen() {
 
                 Spacer(modifier = Modifier.height(17.dp))
 
-                // Texto informativo
                 Text(
                     text = "Próximamente podrás consultar tus rutas desde aquí.",
                     style = MaterialTheme.typography.bodyLarge.copy(

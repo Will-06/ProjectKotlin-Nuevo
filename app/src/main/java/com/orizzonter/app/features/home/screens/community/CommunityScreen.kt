@@ -194,11 +194,12 @@ fun CommunityPostCard(post: CommunityPost) {
             Spacer(Modifier.height(16.dp))
 
             // Iconos de likes y comentarios
+// Iconos de likes y comentarios con mejor color
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Icon(
                     Icons.Default.FavoriteBorder,
                     contentDescription = "Me gusta",
-                    tint = MaterialTheme.colorScheme.onBackground
+                    tint = MaterialTheme.colorScheme.primary // Cambiado
                 )
                 Spacer(Modifier.width(8.dp))
                 Text("${post.likes}", color = MaterialTheme.colorScheme.onBackground)
@@ -208,11 +209,12 @@ fun CommunityPostCard(post: CommunityPost) {
                 Icon(
                     Icons.Default.ChatBubbleOutline,
                     contentDescription = "Comentarios",
-                    tint = MaterialTheme.colorScheme.onBackground
+                    tint = MaterialTheme.colorScheme.secondary // Cambiado
                 )
                 Spacer(Modifier.width(8.dp))
                 Text("${post.comments}", color = MaterialTheme.colorScheme.onBackground)
             }
+
         }
     }
 }

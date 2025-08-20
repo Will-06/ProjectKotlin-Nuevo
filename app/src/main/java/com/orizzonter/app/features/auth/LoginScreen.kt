@@ -1,8 +1,12 @@
+// Reemplaza TODO tu código por este:
+
 package com.orizzonter.app.features.auth
 
 import android.util.Patterns
+import androidx.compose.animation.core.*
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Visibility
@@ -75,124 +79,157 @@ fun LoginScreen(navController: NavController) {
                 .padding(24.dp),
             contentAlignment = Alignment.Center
         ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clip(RoundedCornerShape(24.dp))
-                    .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.1f))
-                    .border(
-                        1.dp,
-                        MaterialTheme.colorScheme.onSurface.copy(alpha = 0.15f),
-                        RoundedCornerShape(24.dp)
+            Box(contentAlignment = Alignment.TopCenter) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clip(RoundedCornerShape(24.dp))
+                        .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.1f))
+                        .border(
+                            1.dp,
+                            MaterialTheme.colorScheme.onSurface.copy(alpha = 0.15f),
+                            RoundedCornerShape(24.dp)
+                        )
+                        .padding(top = 64.dp, bottom = 32.dp, start = 32.dp, end = 32.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text(
+                        text = "Iniciar sesión",
+                        style = MaterialTheme.typography.headlineMedium.copy(fontWeight = FontWeight.Bold),
+                        color = MaterialTheme.colorScheme.onBackground
                     )
-                    .padding(vertical = 32.dp, horizontal = 32.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Text(
-                    text = "Iniciar sesión",
-                    style = MaterialTheme.typography.headlineMedium.copy(fontWeight = FontWeight.Bold),
-                    color = MaterialTheme.colorScheme.onBackground
-                )
 
-                Spacer(Modifier.height(32.dp))
+                    Spacer(Modifier.height(32.dp))
 
-                AuthTextField(
-                    value = email,
-                    onValueChange = {
-                        email = it
-                        errorMessage = null
-                    },
-                    placeholder = "Correo electrónico"
-                )
-
-                Spacer(Modifier.height(16.dp))
-
-                AuthTextField(
-                    value = password,
-                    onValueChange = {
-                        password = it
-                        errorMessage = null
-                    },
-                    placeholder = "Contraseña",
-                    isPassword = true
-                )
-
-                Spacer(Modifier.height(32.dp))
-
-                LoginButton {
-                    when {
-                        email.isBlank() || password.isBlank() -> {
-                            errorMessage = "Completa todos los campos"
-                        }
-                        !Patterns.EMAIL_ADDRESS.matcher(email).matches() -> {
-                            errorMessage = "Correo no válido"
-                        }
-                        else -> {
+                    AuthTextField(
+                        value = email,
+                        onValueChange = {
+                            email = it
                             errorMessage = null
-                            viewModel.login(email, password)
+                        },
+                        placeholder = "Correo electrónico"
+                    )
+
+                    Spacer(Modifier.height(16.dp))
+
+                    AuthTextField(
+                        value = password,
+                        onValueChange = {
+                            password = it
+                            errorMessage = null
+                        },
+                        placeholder = "Contraseña",
+                        isPassword = true
+                    )
+
+                    Spacer(Modifier.height(32.dp))
+
+                    LoginButton {
+                        when {
+                            email.isBlank() || password.isBlank() -> {
+                                errorMessage = "Completa todos los campos"
+                            }
+                            !Patterns.EMAIL_ADDRESS.matcher(email).matches() -> {
+                                errorMessage = "Correo no válido"
+                            }
+                            else -> {
+                                errorMessage = null
+                                viewModel.login(email, password)
+                            }
                         }
+                    }
+
+                    if (authState is AuthState.Error) {
+                        Text(
+                            text = (authState as AuthState.Error).message,
+                            color = Color.Red,
+                            modifier = Modifier.padding(top = 8.dp)
+                        )
+                    }
+
+                    errorMessage?.let {
+                        Text(
+                            text = it,
+                            color = Color.Red,
+                            modifier = Modifier.padding(top = 8.dp)
+                        )
+                    }
+
+                    Spacer(Modifier.height(16.dp))
+
+                    TextButton(onClick = { navController.navigate("forgot_password") }) {
+                        Text(
+                            "¿Olvidaste tu contraseña?",
+                            color = MaterialTheme.colorScheme.primary,
+                            fontWeight = FontWeight.Medium
+                        )
+                    }
+
+                    Spacer(Modifier.height(24.dp))
+
+                    Text(
+                        text = "O continúa con",
+                        color = MaterialTheme.colorScheme.onBackground,
+                        fontSize = 14.sp
+                    )
+
+                    Spacer(Modifier.height(16.dp))
+
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceEvenly,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        SocialLoginButton(R.drawable.google) {}
+                        SocialLoginButton(R.drawable.facebook) {}
+                        SocialLoginButton(R.drawable.twitter) {}
+                    }
+
+                    Spacer(Modifier.height(32.dp))
+
+                    Text(
+                        text = "¿No tienes cuenta?",
+                        color = MaterialTheme.colorScheme.onBackground,
+                        fontWeight = FontWeight.Medium
+                    )
+
+                    TextButton(onClick = { navController.navigate("create_account") }) {
+                        Text(
+                            "Regístrate aquí",
+                            color = MaterialTheme.colorScheme.primary,
+                            fontWeight = FontWeight.Bold
+                        )
                     }
                 }
 
-                if (authState is AuthState.Error) {
-                    Text(
-                        text = (authState as AuthState.Error).message,
-                        color = Color.Red,
-                        modifier = Modifier.padding(top = 8.dp)
+                // ANIMACIÓN flotante del logo
+                val infiniteTransition = rememberInfiniteTransition()
+                val offsetY by infiniteTransition.animateFloat(
+                    initialValue = -6f,
+                    targetValue = 6f,
+                    animationSpec = infiniteRepeatable(
+                        animation = tween(durationMillis = 2000, easing = LinearEasing),
+                        repeatMode = RepeatMode.Reverse
                     )
-                }
-
-                errorMessage?.let {
-                    Text(
-                        text = it,
-                        color = Color.Red,
-                        modifier = Modifier.padding(top = 8.dp)
-                    )
-                }
-
-                Spacer(Modifier.height(16.dp))
-
-                TextButton(onClick = { navController.navigate("forgot_password") }) {
-                    Text(
-                        "¿Olvidaste tu contraseña?",
-                        color = MaterialTheme.colorScheme.primary,
-                        fontWeight = FontWeight.Medium
-                    )
-                }
-
-                Spacer(Modifier.height(24.dp))
-
-                Text(
-                    text = "O continúa con",
-                    color = MaterialTheme.colorScheme.onBackground,
-                    fontSize = 14.sp
                 )
 
-                Spacer(Modifier.height(16.dp))
-
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceEvenly,
-                    verticalAlignment = Alignment.CenterVertically
+                Box(
+                    modifier = Modifier
+                        .size(96.dp)
+                        .offset(y = (-48).dp + offsetY.dp)
+                        .clip(CircleShape)
+                        .background(MaterialTheme.colorScheme.surface)
+                        .border(
+                            2.dp,
+                            MaterialTheme.colorScheme.primary.copy(alpha = 0.3f),
+                            CircleShape
+                        ),
+                    contentAlignment = Alignment.Center
                 ) {
-                    SocialLoginButton(R.drawable.google) {}
-                    SocialLoginButton(R.drawable.facebook) {}
-                    SocialLoginButton(R.drawable.twitter) {}
-                }
-
-                Spacer(Modifier.height(32.dp))
-
-                Text(
-                    text = "¿No tienes cuenta?",
-                    color = MaterialTheme.colorScheme.onBackground,
-                    fontWeight = FontWeight.Medium
-                )
-
-                TextButton(onClick = { navController.navigate("create_account") }) {
-                    Text(
-                        "Regístrate aquí",
-                        color = MaterialTheme.colorScheme.primary,
-                        fontWeight = FontWeight.Bold
+                    Image(
+                        painter = painterResource(id = R.drawable.logo_orizzonter),
+                        contentDescription = "Logo de la app",
+                        modifier = Modifier.size(80.dp)
                     )
                 }
             }

@@ -1,5 +1,7 @@
 package com.orizzonter.app.features.home
 
+import ChatScreen
+import RoutesScreen
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
@@ -12,11 +14,11 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.orizzonter.app.features.home.components.BottomBar
 import com.orizzonter.app.features.home.screens.community.CommunityScreen
-import com.orizzonter.app.features.home.screens.routes.RoutesScreen
 import com.orizzonter.app.features.home.screens.services.ServiceDetailScreen
 import com.orizzonter.app.features.home.screens.services.ServicesScreen
 import com.orizzonter.app.features.home.screens.settings.SettingsScreen
 import com.orizzonter.app.features.auth.data.AuthPreferences
+
 import kotlinx.coroutines.launch
 
 @Composable
@@ -37,9 +39,18 @@ fun HomeScreen(
             startDestination = "routes",
             modifier = Modifier.padding(padding)
         ) {
-            composable("routes") { RoutesScreen() }
-            composable("services") { ServicesScreen(navController) }  // Pasamos el NavController
-            composable("social") { CommunityScreen() }
+            composable("routes") {
+                RoutesScreen(navController = navController)
+            }
+
+            composable("services") {
+                ServicesScreen(navController)
+            }
+
+            composable("social") {
+                CommunityScreen()
+            }
+
             composable("settings") {
                 SettingsScreen(
                     authPreferences = authPreferences,
@@ -58,6 +69,11 @@ fun HomeScreen(
                 val title = backStackEntry.arguments?.getString("title") ?: ""
                 val description = backStackEntry.arguments?.getString("description") ?: ""
                 ServiceDetailScreen(title, description, navController)
+            }
+
+            // ** NUEVA RUTA PARA CHAT **
+            composable("chat") {
+                ChatScreen(navController = navController)
             }
         }
     }
