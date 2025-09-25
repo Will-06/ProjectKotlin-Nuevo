@@ -24,7 +24,7 @@ class MainActivity : ComponentActivity() {
             val systemDarkTheme = isSystemInDarkTheme()
             var isDarkTheme by remember { mutableStateOf(systemDarkTheme) }
 
-            //  Cambiar color de íconos según el tema actual
+            //  Cambiar color de íconos según el tema actual www
             SideEffect {
                 WindowCompat.getInsetsController(window, window.decorView)
                     ?.isAppearanceLightStatusBars = !isDarkTheme
